@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharky</title>
+    <link rel="icon" type="image/x-icon" href="img/1.Sharkie/1.IDLE/1.png">
+    <link rel="stylesheet" href="style.css">
+    </link>
+    <script src="classes/world.class.js"></script>
+    <script src="classes/level.class.js"></script>
+    <script src="classes/keyboard.class.js"></script>
+    <script src="classes/drawable-object.class.js"></script>
+    <script src="classes/status-bar.class.js"></script>
+    <script src="classes/moveable-object.class.js"></script>
+    <script src="classes/character.class.js"></script>
+    <script src="classes/puffer-fish.class.js"></script>
+    <script src="classes/jelly-fish.class.js"></script>
+    <script src="classes/jelly-fish-normal.class.js"></script>
+    <script src="classes/jelly-fish-dangerous.class.js"></script>
+    <script src="classes/posion-bottle.class.js"></script>
+    <script src="classes/endboss.class.js"></script>
+    <script src="classes/coin-bow.class.js"></script>
+    <script src="classes/coin.class.js"></script>
+    <script src="classes/background-object.class.js"></script>
+    <script src="classes/bubble-attack.class.js"></script>
+    <script src="classes/buttons.class.js"></script>
+    <script src="classes/screen-text.class.js"></script>
+    <script src="classes/menu.class.js"></script>
+    <script src="levels/startScreen.js"></script>
+    <script src="levels/endScreen.js"></script>
+    <script src="levels/level1.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/inputs.js"></script>
+
+</head>
+
+<body onload="init()">
+
+
+
+    <div class="container">
+        <h1>Sharky</h1>
+
+        <div id="fullscreen" width="720px" height="480px">
+            <div class="game-options" id="gameOptions">
+                <img src="./img/6.Botones/Full Screen/Mesa de trabajo 9.png" onclick="toggleFullscreen()"
+                    onmouseover="hoverFullScreenButton(this);" onmouseout="unhoverFullScreenButton(this);"
+                    class="fullscreen-button">
+                <img src="img/6.Botones/Mute/muteIcon.png" class="mute-button" id='muteButton' onclick="toggleMute()">
+            </div>
+            <canvas id="canvas" width="720px" height="480px"></canvas>
+        </div>
+
+        <div class="mobile-action-menu" id="mobileActionMenu">
+            <div class="movement-inputs">
+                <div></div>
+                <img src="./img/6.Botones/Key/up.png" id="inputUp">
+                <div></div>
+                <img src="./img/6.Botones/Key/left.png" id="inputLeft">
+                <img src="./img/6.Botones/Key/down.png" id="inputDown">
+                <img src="./img/6.Botones/Key/right.png" id="inputRight">
+            </div>
+            <div class="attack-input">
+                <img src="./img/6.Botones/Key/Space Bar key.png" id="inputSpace">
+            </div>
+            <div class="attack"></div>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

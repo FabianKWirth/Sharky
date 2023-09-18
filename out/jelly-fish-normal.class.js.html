@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: jelly-fish-normal.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: jelly-fish-normal.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents a type of Jellyfish that is in its normal swimming state.
+ * This class extends the base JellyFish class and provides specific image properties
+ * for the normal swimming state and dying state of the Jellyfish.
+ *
+ * @extends {JellyFish} - The base class for Jellyfish.
+ */
+class JellyFishNormal extends JellyFish {
+    
+    /**
+     * An array of image paths representing the Jellyfish's swimming animation frames.
+     * @type {string[]}
+     */
+    IMAGES_FISH_SWIMMING;
+
+     /**
+     * An array of image paths representing the Jellyfish's dying animation frames.
+     * @type {string[]}
+     */
+    IMAGES_FISH_DYING;
+
+    /**
+     * The unique identifier for the type of Jellyfish.
+     * @type {number}
+     */
+    fishTypeId;
+
+
+    /**
+    * Creates a new Jellyfish.
+    *
+    * @param {number} fishTypeId - The unique identifier for the type of Jellyfish.
+    * @param {number} spawnPoint - The initial x-coordinate where the Jellyfish spawns.
+    */
+    constructor(fishTypeId,spawnPoint) {
+        super();
+       
+        this.damage = 5;
+        this.health = 20;
+        this.height = 80;
+        this.width = 80;
+        this.fishTypeId = fishTypeId;
+        this.x = spawnPoint;
+
+        this.IMAGES_FISH_SWIMMING = this.getFishMovementImages();
+        this.IMAGES_FISH_DYING = this.getFishDeathImages();
+        this.loadImages(this.IMAGES_FISH_SWIMMING[fishTypeId]);
+        this.loadImages(this.IMAGES_FISH_DYING[fishTypeId]);
+        this.animate();
+        this.setMovement();
+    }
+
+
+    /**
+    * Sets the hitbox dimensions and position for the Jellyfish object.
+    * The hitbox is used to determine collisions and interactions with other objects.
+    */
+    setHitbox() {
+        this.hitboxHeight = 80;
+        this.hitboxWidth = 56;
+        this.hitBoxX = this.x + 12;
+        this.hitBoxY = this.y + 2;
+    }
+
+    
+    /**
+    * Gets the image paths for the swimming animation frames of the Jellyfish.
+    * @returns {string[][]} An array of image paths for swimming animations for different types of Jellyfish.
+    */
+    getFishMovementImages() {
+        const imagePaths = [];
+        imagePaths[1] = [];
+        for (let i = 1; i &lt;= 4; i++) {
+            const imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Lila ${i}.png`;
+            imagePaths[1].push(imagePath);
+        }
+
+        imagePaths[2] = [];
+        for (let i = 1; i &lt;= 4; i++) {
+            const imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Yellow ${i}.png`;
+            imagePaths[2].push(imagePath);
+        }
+
+        return imagePaths;
+    }
+
+
+    /**
+    * Gets the image paths for the dying animation frames of the Jellyfish.
+    * @returns {string[][]} An array of image paths for dying animations for different types of Jellyfish.
+    */
+    getFishDeathImages() {
+        const imagePaths = [];
+
+        imagePaths[1] = [];
+        for (let i = 1; i &lt;= 4; i++) {
+            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
+            imagePaths[1].push(imagePath);
+        }
+
+        imagePaths[2] = [];
+        for (let i = 1; i &lt;= 4; i++) {
+            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Yellow/y${i}.png`;
+            imagePaths[2].push(imagePath);
+        }
+
+        return imagePaths;
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BubbleAttack.html">BubbleAttack</a></li><li><a href="Buttons.html">Buttons</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinBow.html">CoinBow</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishDangerous.html">JellyFishDangerous</a></li><li><a href="JellyFishNormal.html">JellyFishNormal</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="ScreenText.html">ScreenText</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="World.html">World</a></li><li><a href="backGroundObject.html">backGroundObject</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:06:13 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

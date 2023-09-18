@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: inputs.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: inputs.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Flag indicating whether a mouse click is active.
+ * @type {boolean}
+ */
+let isClicking = false;
+
+/**
+ * Flag indicating whether a touch interaction is active.
+ * @type {boolean}
+ */
+let isTouching = false;
+
+/**
+ * The right boundary of the touch area.
+ * @type {number}
+ */
+let touchRight;
+
+/**
+ * The left boundary of the touch area.
+ * @type {number}
+ */
+let touchLeft;
+
+/**
+ * The bottom boundary of the touch area.
+ * @type {number}
+ */
+let touchBottom;
+
+/**
+ * The top boundary of the touch area.
+ * @type {number}
+ */
+let touchTop;
+
+/**
+ * The X-coordinate of the mouse pointer on the canvas.
+ * @type {number}
+ */
+let mouseX;
+
+/**
+ * The Y-coordinate of the mouse pointer on the canvas.
+ * @type {number}
+ */
+let mouseY;
+
+
+/**
+ * Sets up input event listeners for keyboard, mouse, and touch events.
+ */
+function setInputEventListeners() {
+    setKeyboardListeners();
+    setMouseListeners();
+    setTouchListeners();
+    preventShowingContextMenu();
+}
+
+
+/**
+ * Prevents the default context menu from appearing when right-clicking on specific images with the given IDs.
+ */
+function preventShowingContextMenu() {
+    document.addEventListener('DOMContentLoaded', () => {
+        let imgIds = ["inputUp", "inputLeft", "inputDown", "inputRight", "inputSpace"];
+
+        imgIds.forEach(img => {
+            document.getElementById(img).addEventListener('contextmenu', e => {    // Prevent the default context menu from appearing
+                e.preventDefault();
+            });
+        });
+    });
+}
+
+
+/**
+ * Sets up keyboard event listeners to handle keydown and keyup events.
+ */
+function setKeyboardListeners() {
+    window.addEventListener("keydown", (event) => {
+        keyboard.setInput(event.code);
+    });
+
+    window.addEventListener("keyup", (event) => {
+        keyboard.unsetInput(event.code);
+    });
+}
+
+
+/**
+ * Sets up mouse event listeners to handle mousemove, mousedown, and mouseup events.
+ */
+function setMouseListeners() {
+    canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+    });
+
+    document.addEventListener("mousedown", () => {
+        isClicking = true; // Set the flag to true when the mouse button is pressed
+    });
+
+    document.addEventListener("mouseup", () => {
+        isClicking = false; // Set the flag to false when the mouse button is released
+    });
+}
+
+
+/**
+ * Sets touch dimensions for interaction with the canvas.
+ * @param {TouchEvent} e - The TouchEvent object representing the touch input.
+ */
+function setTouchDimensions(e) {
+    const rect = canvas.getBoundingClientRect();
+    let radius = 5;
+    touch = e['targetTouches'][0];
+    touchLeft = touch.clientX - rect.right -radius;
+    touchRight = touch.clientX + rect.right + radius;
+    touchTop = touch.clientY - rect.top - radius;
+    touchBottom = touch.clientY - rect.top + radius;
+    isTouching = true;
+}
+
+
+/**
+ * Sets up touch event listeners to handle touchstart and touchend events.
+ */
+function setTouchListeners() {
+
+    canvas.addEventListener("touchmove", (e) => {
+        setTouchDimensions(e);
+    }, { passive: true });
+
+    canvas.addEventListener("touchstart", (e) => {
+        setTouchDimensions(e);
+    }, { passive: true });
+
+    document.addEventListener("touchend", () => {
+        isTouching = false; // Set the flag to false when a touch event ends
+    });
+
+    setInputUpListeners();
+    setInputDownListeners();
+    setInputLeftListeners();
+    setInputRightListeners();
+    setSpaceListeners();
+}
+
+
+/** 
+ Touch event listener for inputUp
+*/
+function setInputUpListeners() {
+    document.getElementById('inputUp').addEventListener('touchstart', () => {
+        keyboard.setInput("ArrowUp");
+    }, { passive: true });
+
+    document.getElementById('inputUp').addEventListener('touchend', () => {
+        keyboard.unsetInput("ArrowUp");
+    });
+}
+
+
+
+/** 
+ Touch event listener for inputDown
+*/
+function setInputDownListeners() {
+
+    document.getElementById('inputDown').addEventListener('touchstart', () => {
+        keyboard.setInput("ArrowDown");
+    }, { passive: true });
+
+    document.getElementById('inputDown').addEventListener('touchend', () => {
+        keyboard.unsetInput("ArrowDown");
+    });
+}
+
+/** 
+ Touch event listener for inputLeft
+*/
+function setInputLeftListeners() {
+    document.getElementById('inputLeft').addEventListener('touchstart', () => {
+        keyboard.setInput("ArrowLeft");
+    }, { passive: true });
+
+    document.getElementById('inputLeft').addEventListener('touchend', () => {
+        keyboard.unsetInput("ArrowLeft");
+    });
+}
+
+/** 
+ Touch event listener for inputRight
+*/
+function setInputRightListeners() {
+    document.getElementById('inputRight').addEventListener('touchstart', () => {
+        keyboard.setInput("ArrowRight");
+    }, { passive: true });
+
+    document.getElementById('inputRight').addEventListener('touchend', () => {
+        keyboard.unsetInput("ArrowRight");
+    });
+}
+
+
+/** 
+ Touch event listener for spaceBar-Button
+*/
+function setSpaceListeners() {
+
+    document.getElementById('inputSpace').addEventListener('touchstart', () => {
+        keyboard.setInput("Space");
+    }, { passive: true });
+
+    document.getElementById('inputSpace').addEventListener('touchend', () => {
+        keyboard.unsetInput("Space");
+    });
+}
+
+
+/**
+ * Changes the image source to a hover state when the mouse hovers over the element.
+ * @param {HTMLElement} element - The HTML element to apply the hover effect to.
+ */
+function hoverStartButton(element) {
+    element.setAttribute('src', './img/6.Botones/Start/2.png');
+}
+
+
+/**
+ * Reverts the image source to its original state when the mouse is no longer hovering over the element.
+ * @param {HTMLElement} element - The HTML element to revert the image source for.
+ */
+function unhoverStartButton(element) {
+    element.setAttribute('src', './img/6.Botones/Start/1.png');
+}
+
+
+/**
+ * Changes the image source to a hover state when the mouse hovers over the element.
+ * @param {HTMLElement} element - The HTML element to apply the hover effect to.
+ */
+function hoverFullScreenButton(element) {
+    element.setAttribute('src', './img/6.Botones/Full Screen/Mesa de trabajo 7.png');
+}
+
+
+/**
+ * Reverts the image source to its original state when the mouse is no longer hovering over the element.
+ * @param {HTMLElement} element - The HTML element to revert the image source for.
+ */
+function unhoverFullScreenButton(element) {
+    element.setAttribute('src', './img/6.Botones/Full Screen/Mesa de trabajo 9.png');
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#backgroundMusicId">backgroundMusicId</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfGameJustStarted">checkIfGameJustStarted</a></li><li><a href="global.html#clearAllIntervals">clearAllIntervals</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#ctx">ctx</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endScreen">endScreen</a></li><li><a href="global.html#exitFullscreen">exitFullscreen</a></li><li><a href="global.html#gameActive">gameActive</a></li><li><a href="global.html#hoverFullScreenButton">hoverFullScreenButton</a></li><li><a href="global.html#hoverStartButton">hoverStartButton</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isClicking">isClicking</a></li><li><a href="global.html#isFullscreen">isFullscreen</a></li><li><a href="global.html#isMuted">isMuted</a></li><li><a href="global.html#isTouching">isTouching</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#mouseX">mouseX</a></li><li><a href="global.html#mouseY">mouseY</a></li><li><a href="global.html#musicPath">musicPath</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playBackGroundAudio">playBackGroundAudio</a></li><li><a href="global.html#preventShowingContextMenu">preventShowingContextMenu</a></li><li><a href="global.html#requestFullscreen">requestFullscreen</a></li><li><a href="global.html#resetDrawingOfMenus">resetDrawingOfMenus</a></li><li><a href="global.html#screenElements">screenElements</a></li><li><a href="global.html#setInputDownListeners">setInputDownListeners</a></li><li><a href="global.html#setInputEventListeners">setInputEventListeners</a></li><li><a href="global.html#setInputLeftListeners">setInputLeftListeners</a></li><li><a href="global.html#setInputRightListeners">setInputRightListeners</a></li><li><a href="global.html#setInputUpListeners">setInputUpListeners</a></li><li><a href="global.html#setKeyboardListeners">setKeyboardListeners</a></li><li><a href="global.html#setMouseListeners">setMouseListeners</a></li><li><a href="global.html#setSpaceListeners">setSpaceListeners</a></li><li><a href="global.html#setStoppableInterval">setStoppableInterval</a></li><li><a href="global.html#setTouchDimensions">setTouchDimensions</a></li><li><a href="global.html#setTouchListeners">setTouchListeners</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#startScreen">startScreen</a></li><li><a href="global.html#stopBackgroundMusic">stopBackgroundMusic</a></li><li><a href="global.html#stoppableIntervalIds">stoppableIntervalIds</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#touchBottom">touchBottom</a></li><li><a href="global.html#touchLeft">touchLeft</a></li><li><a href="global.html#touchRight">touchRight</a></li><li><a href="global.html#touchTop">touchTop</a></li><li><a href="global.html#unhoverFullScreenButton">unhoverFullScreenButton</a></li><li><a href="global.html#unhoverStartButton">unhoverStartButton</a></li><li><a href="global.html#world">world</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:07:14 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

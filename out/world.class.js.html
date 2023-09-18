@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: world.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: world.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>class World {
+    /**
+     * The current game level.
+     * @type {Level}
+     */
+    level;
+
+    /**
+     * The HTML canvas element for rendering the game.
+     * @type {HTMLCanvasElement}
+     */
+    canvas;
+
+    /**
+     * The 2D rendering context of the canvas.
+     * @type {CanvasRenderingContext2D}
+     */
+    ctx;
+
+    /**
+     * The keyboard input manager.
+     * @type {Keyboard}
+     */
+    keyboard;
+
+    /**
+     * The x-coordinate of the camera.
+     * @type {number}
+     */
+    camera_x = 0;
+
+    /**
+     * The total number of coins in the game.
+     * @type {number}
+     */
+    totalCoins;
+
+    /**
+     * The number of collected coins.
+     * @type {number}
+     */
+    collectedCoins;
+
+    /**
+     * The camera offset (0=right, 900=left).
+     * @type {number}
+     */
+    cameraOffset = 0;
+
+    /**
+     * The game character.
+     * @type {Character}
+     */
+    character;
+
+    /**
+     * The status bar for displaying life information.
+     * @type {StatusBar}
+     */
+    lifeStatusBar;
+
+    /**
+     * The status bar for displaying coin information.
+     * @type {StatusBar}
+     */
+    coinStatusBar;
+
+    /**
+     * The status bar for displaying poison information.
+     * @type {StatusBar}
+     */
+    poisonStatusBar;
+
+    /**
+     * The status bar for displaying endboss health information.
+     * @type {StatusBar}
+     */
+    bossStatusBar;
+
+    /**
+     * A flag indicating whether the game is stopped.
+     * @type {boolean}
+     * @static
+     */
+    static stopGame = true;
+
+
+     /**
+     * Creates a new instance of the game world.
+     * @param {HTMLCanvasElement} canvas - The game canvas element.
+     * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+     * @param {Keyboard} keyboard - The keyboard input manager.
+     * @constructor
+     */
+    constructor(canvas, ctx, keyboard) {
+        this.ctx = ctx;
+        this.canvas = canvas;
+        this.keyboard = keyboard;
+        this.character = new Character();
+        this.lifeStatusBar = new StatusBar("life");
+        this.coinStatusBar = new StatusBar("coin");
+        this.poisonStatusBar = new StatusBar("poison");
+        initLevel1();
+        this.level = level1;
+        this.collectedCoins = 0;
+        this.totalCoins = this.level.coinBows.length * 5;
+        this.setWorld();
+        this.checkCollisions();
+        playBackGroundAudio(musicPath);
+    }
+
+
+    /**
+    * Sets the world reference for the character, end bosses, and enemies to establish their connection to the game world.
+    * @memberof World
+    */
+    setWorld() {
+        this.character.world = this;
+
+        this.level.endBoss.forEach(endBoss => {
+            endBoss.world = this;
+        });
+
+        this.level.enemies.forEach(enemy => {
+            enemy.world = this;
+        });
+    }
+
+
+    /**
+    * Draws the game world including background, characters, enemies, objects, and status bars on the game canvas.
+    * @memberof World
+    */
+    draw() {
+        if (World.stopGame) {
+            return; // Exit the function if the game is Stopped
+        }
+
+        this.setCamera(-this.camera_x);
+        this.drawBackGround();
+        this.drawCharacter();
+        this.drawEnemies();
+        this.drawOtherObjects();
+        this.setCamera(this.camera_x);
+        this.drawStatusBars();
+
+        let self = this;
+        requestAnimationFrame(function () {
+            self.draw();
+        });
+    }
+
+
+    /**
+    * Draws the status bars (e.g., life, coin, poison) on the game canvas.
+    * @memberof World
+    */
+    drawStatusBars(){
+        this.addToMap(this.lifeStatusBar);
+        this.addToMap(this.coinStatusBar);
+        this.addToMap(this.poisonStatusBar);
+        if(this.bossStatusBar){
+            this.addToMap(this.bossStatusBar);
+        }
+    }
+
+
+    /**
+    * Draws the background objects on the game canvas.
+    * @memberof World
+    */
+    drawBackGround(){
+        this.addObjectsToMap(this.level.backGroundObjects);
+    };
+
+
+    /**
+    * Draws the character and their bubbles on the game canvas.
+    * @memberof World
+    */
+    drawCharacter(){
+        this.addToMap(this.character);
+        this.character.bubbles.forEach((bubble) => {
+            this.addObjectsToMap(bubble);
+        });
+    }
+
+
+    /**
+    * Draws enemies, poison bottles, and the end boss on the game canvas.
+    * @memberof World
+    */
+    drawEnemies(){
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.poisonBottles);
+        this.addObjectsToMap(this.level.endBoss);
+    }
+
+
+    /**
+    * Draws poison bottles, coins on the game canvas.
+    * @memberof World
+    */
+    drawOtherObjects(){
+        this.addObjectsToMap(this.level.poisonBottles);
+        this.level.coinBows.forEach((coinBow) => {
+            this.addObjectsToMap(coinBow.coins);
+        });
+    }
+
+
+    /**
+    * Adjusts the camera to follow the game character's position.
+    * @memberof World
+    * @param {number} x - The x-coordinate of the character's position.
+    */
+    cameraFollow(x) {
+
+        x = Math.abs(x);
+
+        if (this.character.otherDirection == true &amp;&amp; this.cameraOffset > -400) {
+            this.cameraOffset -= 10;
+        } else if (this.character.otherDirection == false &amp;&amp; this.cameraOffset &lt; -80) {
+            this.cameraOffset += 10;
+        }
+        let cameraX = x + this.cameraOffset;
+
+        if (cameraX &lt; 0) {
+            cameraX = 0;
+        }
+        if (cameraX > 2150) {
+            cameraX = 2150;
+        }
+
+        this.camera_x = cameraX;
+    }
+
+
+    /**
+    * Sets the camera position by translating the rendering context.
+    * @memberof World
+    * @param {number} x - The x-coordinate to translate the rendering context by.
+    */
+    setCamera(x) {
+        this.ctx.translate(x, 0);
+    }
+
+
+    /**
+    * Periodically checks for collisions between game objects and handles the corresponding interactions.
+    * @memberof World
+    */
+    checkCollisions() {
+        setStoppableInterval(() => {
+            this.setHitboxes();
+            this.enemyHitsCharacter();
+            this.poisonBottleHitsCharacter();
+            this.bubbleHitsEnemies();
+            this.characterCollectsCoins();
+        }, 1000 / 60);
+    }
+
+    
+    /**
+    * Handles character collection of coins from coin bows in the game.
+    * @memberof World
+    */
+    characterCollectsCoins() {
+        this.level.coinBows.forEach((coinBow) => {
+            for (let i = 0; i &lt; coinBow["coins"].length; i++) {
+                const coin = coinBow["coins"][i];
+                if (this.character.isColliding(coin)) {
+                    coin.collectCoin(world, coinBow, i);
+                }
+            }
+        });
+    }
+
+
+    /**
+    * Handles enemy attacks on the game character.
+    * @memberof World
+    */
+    enemyHitsCharacter() {
+        this.level.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit(enemy.damage);
+            }
+        });
+    }
+
+
+    /**
+    * Handles the effects of poison bottles on the game character.
+    * @memberof World
+    */
+    poisonBottleHitsCharacter() {
+        this.level.poisonBottles.forEach((poisonBottle, i) => {
+            if (this.character.isColliding(poisonBottle)) {
+                this.character.setPoison(poisonBottle.poisonAmount);
+                this.level.poisonBottles.splice(i, 1);
+                poisonBottle.playHitAudio();
+            }
+        });
+    }
+
+
+    /**
+    * Handles the interaction between character bubbles and enemies in the game.
+    * @memberof World
+    */
+    bubbleHitsEnemies() {
+        this.character.bubbles.forEach((bubble, i) => {
+            this.level.enemies.forEach((enemy) => {
+                if (bubble.isColliding(enemy)) {
+                    enemy.hit(bubble.damage);
+                    this.character.bubbles.splice(i, 1);
+                }
+            });
+            this.level.endBoss.forEach((boss, i) => {
+                if (bubble.isColliding(boss)) {
+                    boss.hit(bubble.damage);
+                        this.character.bubbles.splice(i, 1);
+                }
+            });
+        });
+    }
+
+
+    /**
+    * Sets the hitboxes for the game entities, including the character, enemies, poison bottles, coins, bubbles, and end boss.
+    * @memberof World
+    */
+    setHitboxes() {
+        this.character.setHitbox();
+        this.level.enemies.forEach((enemy) => {
+            enemy.setHitbox();
+        });
+        this.level.poisonBottles.forEach((poisonBottle, i) => {
+            poisonBottle.setHitbox();
+        });
+        this.character.bubbles.forEach((bubble, i) => {
+            bubble.setHitbox();
+        });
+
+        this.level.endBoss.forEach((boss) => {
+            boss.setHitbox();
+        });
+
+        this.level.coinBows.forEach((coinBow) => {
+            for (let i = 0; i &lt; coinBow["coins"].length; i++) {
+                const coin = coinBow["coins"][i];
+                coin.setHitbox();
+            }
+        });
+    }
+
+
+    /**
+    * Adds a drawable object to the game map, handling image flipping, drawing, and restoration.
+    * @memberof World
+    * @param {DrawableObject} object - The drawable object to be added to the map.
+    */
+    addToMap(object) {
+        this.flipImg(object);
+        object.draw(this.ctx);
+        this.restoreFlippedImg(object);
+    }
+
+
+    /**
+    * Flips the image horizontally if the object's `otherDirection` property is `true`.
+    * @memberof World
+    * @param {DrawableObject} object - The drawable object whose image may need to be flipped.
+    */
+    flipImg(object) {
+        if (object.otherDirection) {
+            this.ctx.save();
+            this.ctx.translate(object.width, 0);
+            this.ctx.scale(-1, 1);
+            object.x = object.x * (-1);
+        }
+    }
+
+
+    /**
+    * Restores the canvas to its original state after flipping the image if the object's `otherDirection` property is `true`.
+    * @memberof World
+    * @param {DrawableObject} object - The drawable object whose image may have been flipped.
+    */
+    restoreFlippedImg(object) {
+        if (object.otherDirection) {
+            this.ctx.restore();
+            object.x = object.x * (-1);
+        }
+    }
+
+
+    /**
+    * Adds one or multiple drawable objects to the game map.
+    * @memberof World
+    * @param {DrawableObject|DrawableObject[]} objects - The drawable object(s) to be added to the map.
+    */
+    addObjectsToMap(objects) {
+        if (Array.isArray(objects)) {
+            objects.forEach(object => {
+                this.addToMap(object);
+            });
+        } else {
+            this.addToMap(objects);
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BubbleAttack.html">BubbleAttack</a></li><li><a href="Buttons.html">Buttons</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinBow.html">CoinBow</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishDangerous.html">JellyFishDangerous</a></li><li><a href="JellyFishNormal.html">JellyFishNormal</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="ScreenText.html">ScreenText</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="World.html">World</a></li><li><a href="backGroundObject.html">backGroundObject</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:06:13 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
