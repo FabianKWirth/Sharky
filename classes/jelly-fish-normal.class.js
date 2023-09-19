@@ -6,17 +6,17 @@
  * @extends {JellyFish} - The base class for Jellyfish.
  */
 class JellyFishNormal extends JellyFish {
-    
+
     /**
      * An array of image paths representing the Jellyfish's swimming animation frames.
      * @type {string[]}
      */
     IMAGES_FISH_SWIMMING;
 
-     /**
-     * An array of image paths representing the Jellyfish's dying animation frames.
-     * @type {string[]}
-     */
+    /**
+    * An array of image paths representing the Jellyfish's dying animation frames.
+    * @type {string[]}
+    */
     IMAGES_FISH_DYING;
 
     /**
@@ -32,9 +32,9 @@ class JellyFishNormal extends JellyFish {
     * @param {number} fishTypeId - The unique identifier for the type of Jellyfish.
     * @param {number} spawnPoint - The initial x-coordinate where the Jellyfish spawns.
     */
-    constructor(fishTypeId,spawnPoint) {
+    constructor(fishTypeId, spawnPoint) {
         super();
-       
+
         this.damage = 5;
         this.health = 20;
         this.height = 80;
@@ -62,7 +62,7 @@ class JellyFishNormal extends JellyFish {
         this.hitBoxY = this.y + 2;
     }
 
-    
+
     /**
     * Gets the image paths for the swimming animation frames of the Jellyfish.
     * @returns {string[][]} An array of image paths for swimming animations for different types of Jellyfish.
@@ -70,14 +70,13 @@ class JellyFishNormal extends JellyFish {
     getFishMovementImages() {
         const imagePaths = [];
         imagePaths[1] = [];
-        for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Lila ${i}.png`;
-            imagePaths[1].push(imagePath);
-        }
-
         imagePaths[2] = [];
+        let imagePath = "";
+
         for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Yellow ${i}.png`;
+            imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Lila ${i}.png`;
+            imagePaths[1].push(imagePath);
+            imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Yellow ${i}.png`;
             imagePaths[2].push(imagePath);
         }
 
@@ -91,16 +90,14 @@ class JellyFishNormal extends JellyFish {
     */
     getFishDeathImages() {
         const imagePaths = [];
-
         imagePaths[1] = [];
-        for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
-            imagePaths[1].push(imagePath);
-        }
-
         imagePaths[2] = [];
+        let imagePath = "";
+
         for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Yellow/y${i}.png`;
+            imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
+            imagePaths[1].push(imagePath);
+            imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Yellow/y${i}.png`;
             imagePaths[2].push(imagePath);
         }
 

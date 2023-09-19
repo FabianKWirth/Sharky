@@ -14,7 +14,7 @@ class JellyFish extends MoveableObject {
         super();
         this.loadImg("./img/2.Enemy/2 Jelly fish/Regular damage/Lila 1.png");
         this.health = 20;
-        this.speed = 2;
+        this.speed = 4;
     }
 
 
@@ -23,7 +23,7 @@ class JellyFish extends MoveableObject {
     * This method sets the speed property of the fish to a random value between 2 and 4 (inclusive).
     */
     setRandowFishSpeed() {
-        this.speed = Math.random() * 2 + 2;
+        this.speed = Math.random() * 3 + 3;
     }
 
 
@@ -32,9 +32,9 @@ class JellyFish extends MoveableObject {
     */
     move() {
         this.y += this.speed;
-        if (this.isBeyondTop() == false) {
+        if (!this.isBeyondTop()) {
             this.speed = this.speed * (-1);
-        } else if (this.isAboveGround() == false) {
+        } else if (!this.isAboveGround()) {
             this.speed = this.speed * (-1);
         }
     }
@@ -46,7 +46,7 @@ class JellyFish extends MoveableObject {
     setMovement() {
         setStoppableInterval(() => {
             this.move();
-        }, 1000 / 60);
+        }, 1000 / 30);
     }
 
     
@@ -63,22 +63,4 @@ class JellyFish extends MoveableObject {
             }
         }, 1000 / 10);
     }
-
-
-    /**
-    * Get complete image paths for various fish types.
-    * @param {string[]} imageTypes - An array of image types to retrieve paths for.
-    * @returns {string[]} An array of image paths indexed by fish type IDs.
-    */
-    getCompleteImagePaths(imageTypes) {
-        const imagePaths = [];
-        const fishTypeIds = [1, 2, 3];
-        fishTypeIds.forEach(fishTypeId => {
-            imagePaths[fishTypeId] = this.getFishSpecificImagePaths(fishTypeId, imageTypes);
-        });
-        return imagePaths;
-    }
-
-
-
 }

@@ -82,7 +82,12 @@ class MoveableObject extends DrawableObject {
      */
     dead = false;
 
-    hitAudioSrc="/audio/hit2.mp3";
+
+    /**
+     * The audio element if getting hit.
+     * @type {Audio}
+     */
+    hitAudio = new Audio("./audio/hit2.mp3")
 
 
     /**
@@ -99,9 +104,9 @@ class MoveableObject extends DrawableObject {
     /**
     * Plays a hit audio sound if a hit audio source is provided and the game audio is not muted.
     */
-    playHitAudio(){
-        if(this.hitAudioSrc){
-            playAudio(new Audio(this.hitAudioSrc));
+    playHitAudio(audioObj) {
+        if (!isMuted) {
+            playAudio(audioObj);
         }
     }
 
@@ -127,6 +132,7 @@ class MoveableObject extends DrawableObject {
      */
     die() {
         this.speed = 0;
+        this.damage = 0;
         setStoppableInterval(() => {
             this.y += this.updraft;
             this.updraft -= 0.001;
@@ -149,7 +155,7 @@ class MoveableObject extends DrawableObject {
     isColliding(obj) {
         return this.hitBoxX + this.hitboxWidth > obj.hitBoxX &&
             this.hitBoxY + this.hitboxHeight > obj.hitBoxY &&
-            this.hitBoxX < obj.hitBoxX +obj.hitboxWidth &&
+            this.hitBoxX < obj.hitBoxX + obj.hitboxWidth &&
             this.hitBoxY < obj.hitBoxY + obj.hitboxHeight
     }
 
@@ -213,7 +219,7 @@ class MoveableObject extends DrawableObject {
             this.renderObject(images[id]);
             id++;
         } else {
-            this.renderObject(images[id-1]);
+            this.renderObject(images[id - 1]);
         }
         return id;
     }
@@ -232,20 +238,5 @@ class MoveableObject extends DrawableObject {
     */
     moveRight() {
         this.x += this.speed;
-    }
-
-
-    /**
-    * Get an array of image paths for displaying coin animations.
-    * @returns {string[]} An array of image paths representing coin animation frames.
-    */
-    getCoinImages() {
-        const imagePaths = [];
-        for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/4. Marcadores/1. Coins/${i}.png`;
-            imagePaths.push(imagePath);
-        }
-
-        return imagePaths;
     }
 }

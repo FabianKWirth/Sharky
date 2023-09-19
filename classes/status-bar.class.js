@@ -154,31 +154,33 @@ class StatusBar extends DrawableObject {
     */
     getImagePaths(imageTypes) {
         const imagePaths = [];
-
-        switch (imageTypes) {
-            case "live-status-bar": {
-                for (let i = 0; i <= 100; i += 20) {
-                    const imagePath = `./img/4. Marcadores/green/Life/${i}_  copia 3.png`;
-                    imagePaths.push(imagePath);
-                }
-            }
-                break;
-            case "coin-status-bar": {
-                for (let i = 0; i <= 100; i += 20) {
-                    const imagePath = `./img/4. Marcadores/green/Coin/${i}_  copia 4.png`;
-                    imagePaths.push(imagePath);
-                }
-            }
-                break;
-            case "poison-status-bar": {
-                for (let i = 0; i <= 100; i += 20) {
-                    const imagePath = `./img/4. Marcadores/green/poisoned bubbles/${i}_ copia 2.png`;
-                    imagePaths.push(imagePath);
-                }
-            }
-                break;
+        for (let i = 0; i <= 100; i += 20) {
+            const imagePath = this.getStatusBarImgPath(imageTypes, i);
+            imagePaths.push(imagePath);
         }
-
         return imagePaths;
     }
+
+
+    /**
+    * Generates a file path for a status bar image based on the specified image type and index.
+    *
+    * @param {string} imageTypes - The type of status bar image ("live-status-bar", "coin-status-bar", or other).
+    * @param {number} i - The index or numerical value to include in the file path.
+    * @returns {string} The file path for the status bar image corresponding to the given parameters.
+    */
+    getStatusBarImgPath(imageTypes, i) {
+        switch (imageTypes) {
+            case "live-status-bar": {
+                return `./img/4. Marcadores/green/Life/${i}_  copia 3.png`;
+            }
+            case "coin-status-bar": {
+                return `./img/4. Marcadores/green/Coin/${i}_  copia 4.png`;
+            }
+            default: {
+                return `./img/4. Marcadores/green/poisoned bubbles/${i}_ copia 2.png`;
+            }
+        }
+    }
 }
+

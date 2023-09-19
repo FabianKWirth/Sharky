@@ -84,10 +84,8 @@ function init() {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
     clearCanvas(ctx);
-
     keyboard = new Keyboard();
     setInputEventListeners();
-
     showStartScreen(canvas, ctx);
 }
 
@@ -106,11 +104,10 @@ function showStartScreen(canvas, ctx) {
  * Starts the game by resetting menus, initializing the game world, and beginning gameplay. Verifies that a game is only started once.
  */
 function startGame() {
+    addMobileActionMenu();
     resetDrawingOfMenus();
     if (checkIfGameJustStarted() == false) {
         world = new World(canvas, ctx, keyboard);
-        World.stopGame = false;
-        world.draw();
     }
 }
 
@@ -146,6 +143,7 @@ function clearCanvas(ctx) {
  * @param {string} type - The type of the end screen (e.g., "win", "lose").
  */
 function endGame(type) {
+    removeMobileActionMenu();
     clearAllIntervals();
     World.stopGame = true;
     endScreen = new Menu(canvas, ctx, type);
@@ -167,7 +165,7 @@ function resetDrawingOfMenus() {
         endScreen.stopDrawing();
         endScreen = null;
     }
-    screenElements =[];
+    screenElements = [];
 }
 
 
@@ -250,18 +248,18 @@ function toggleMute() {
         isMuted = true;
         stopBackgroundMusic();
         document.getElementById("muteButton").src = './img/6.Botones/Mute/muteIcon.png';
-        
+
     }
 }
 
 /**
  * Stops and resets the background music audio playback and removes the audio element from the DOM.
  */
-function stopBackgroundMusic(){
+function stopBackgroundMusic() {
     let backgroundAudio = document.getElementById('background-music');
-        if (backgroundAudio) {
-            backgroundAudio.remove();
-        }
+    if (backgroundAudio) {
+        backgroundAudio.remove();
+    }
 }
 
 
@@ -279,7 +277,7 @@ function playBackGroundAudio(url) {
     newAudio.src = url;
     document.body.appendChild(newAudio);
     newAudio.style.display = 'none';
-    if(!isMuted){
+    if (!isMuted) {
         newAudio.play();
     }
 }

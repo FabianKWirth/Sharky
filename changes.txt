@@ -1,0 +1,3 @@
+Kamera folgt jetzt weniger schnell der Blickrichtung des Characters wenn er sich dreht
+
+Buttons haben bei mir auch geblinkt, wenn ich in den DevTools die Option "Cache deaktivieren" aktiviert habe. Das ist jetzt nicht mehr so.

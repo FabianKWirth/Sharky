@@ -85,14 +85,15 @@ class World {
     static stopGame = true;
 
 
-     /**
-     * Creates a new instance of the game world.
-     * @param {HTMLCanvasElement} canvas - The game canvas element.
-     * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
-     * @param {Keyboard} keyboard - The keyboard input manager.
-     * @constructor
-     */
+    /**
+    * Creates a new instance of the game world.
+    * @param {HTMLCanvasElement} canvas - The game canvas element.
+    * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+    * @param {Keyboard} keyboard - The keyboard input manager.
+    * @constructor
+    */
     constructor(canvas, ctx, keyboard) {
+
         this.ctx = ctx;
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -104,8 +105,12 @@ class World {
         this.level = level1;
         this.collectedCoins = 0;
         this.totalCoins = this.level.coinBows.length * 5;
-        this.setWorld();
-        this.checkCollisions();
+        Promise.resolve(this.setWorld()).then(() => {
+            World.stopGame = false;
+            world.draw();
+            this.checkCollisions();
+        });
+
         playBackGroundAudio(musicPath);
     }
 
@@ -119,10 +124,6 @@ class World {
 
         this.level.endBoss.forEach(endBoss => {
             endBoss.world = this;
-        });
-
-        this.level.enemies.forEach(enemy => {
-            enemy.world = this;
         });
     }
 
@@ -155,11 +156,11 @@ class World {
     * Draws the status bars (e.g., life, coin, poison) on the game canvas.
     * @memberof World
     */
-    drawStatusBars(){
+    drawStatusBars() {
         this.addToMap(this.lifeStatusBar);
         this.addToMap(this.coinStatusBar);
         this.addToMap(this.poisonStatusBar);
-        if(this.bossStatusBar){
+        if (this.bossStatusBar) {
             this.addToMap(this.bossStatusBar);
         }
     }
@@ -169,7 +170,7 @@ class World {
     * Draws the background objects on the game canvas.
     * @memberof World
     */
-    drawBackGround(){
+    drawBackGround() {
         this.addObjectsToMap(this.level.backGroundObjects);
     };
 
@@ -178,7 +179,7 @@ class World {
     * Draws the character and their bubbles on the game canvas.
     * @memberof World
     */
-    drawCharacter(){
+    drawCharacter() {
         this.addToMap(this.character);
         this.character.bubbles.forEach((bubble) => {
             this.addObjectsToMap(bubble);
@@ -190,7 +191,7 @@ class World {
     * Draws enemies, poison bottles, and the end boss on the game canvas.
     * @memberof World
     */
-    drawEnemies(){
+    drawEnemies() {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.poisonBottles);
         this.addObjectsToMap(this.level.endBoss);
@@ -201,7 +202,7 @@ class World {
     * Draws poison bottles, coins on the game canvas.
     * @memberof World
     */
-    drawOtherObjects(){
+    drawOtherObjects() {
         this.addObjectsToMap(this.level.poisonBottles);
         this.level.coinBows.forEach((coinBow) => {
             this.addObjectsToMap(coinBow.coins);
@@ -218,10 +219,10 @@ class World {
 
         x = Math.abs(x);
 
-        if (this.character.otherDirection == true && this.cameraOffset > -400) {
-            this.cameraOffset -= 10;
-        } else if (this.character.otherDirection == false && this.cameraOffset < -80) {
-            this.cameraOffset += 10;
+        if (this.character.otherDirection && this.cameraOffset > -400) {
+            this.cameraOffset -= 6;
+        } else if (!this.character.otherDirection && this.cameraOffset < -80) {
+            this.cameraOffset += 6;
         }
         let cameraX = x + this.cameraOffset;
 
@@ -257,10 +258,10 @@ class World {
             this.poisonBottleHitsCharacter();
             this.bubbleHitsEnemies();
             this.characterCollectsCoins();
-        }, 1000 / 60);
+        }, 1000 / 20);
     }
 
-    
+
     /**
     * Handles character collection of coins from coin bows in the game.
     * @memberof World
@@ -269,6 +270,7 @@ class World {
         this.level.coinBows.forEach((coinBow) => {
             for (let i = 0; i < coinBow["coins"].length; i++) {
                 const coin = coinBow["coins"][i];
+                coin.setHitbox();
                 if (this.character.isColliding(coin)) {
                     coin.collectCoin(world, coinBow, i);
                 }
@@ -283,6 +285,8 @@ class World {
     */
     enemyHitsCharacter() {
         this.level.enemies.forEach((enemy) => {
+            enemy.setHitbox();
+            this.character.setHitbox();
             if (this.character.isColliding(enemy)) {
                 this.character.hit(enemy.damage);
             }
@@ -296,6 +300,7 @@ class World {
     */
     poisonBottleHitsCharacter() {
         this.level.poisonBottles.forEach((poisonBottle, i) => {
+            poisonBottle.setHitbox();
             if (this.character.isColliding(poisonBottle)) {
                 this.character.setPoison(poisonBottle.poisonAmount);
                 this.level.poisonBottles.splice(i, 1);
@@ -311,6 +316,7 @@ class World {
     */
     bubbleHitsEnemies() {
         this.character.bubbles.forEach((bubble, i) => {
+            bubble.setHitbox();
             this.level.enemies.forEach((enemy) => {
                 if (bubble.isColliding(enemy)) {
                     enemy.hit(bubble.damage);
@@ -318,9 +324,10 @@ class World {
                 }
             });
             this.level.endBoss.forEach((boss, i) => {
+                boss.setHitbox();
                 if (bubble.isColliding(boss)) {
                     boss.hit(bubble.damage);
-                        this.character.bubbles.splice(i, 1);
+                    this.character.bubbles.splice(i, 1);
                 }
             });
         });
@@ -328,25 +335,10 @@ class World {
 
 
     /**
-    * Sets the hitboxes for the game entities, including the character, enemies, poison bottles, coins, bubbles, and end boss.
+    * Sets the hitboxes for the game entities, including the character, poison bottles, coins, bubbles, and end boss.
     * @memberof World
     */
     setHitboxes() {
-        this.character.setHitbox();
-        this.level.enemies.forEach((enemy) => {
-            enemy.setHitbox();
-        });
-        this.level.poisonBottles.forEach((poisonBottle, i) => {
-            poisonBottle.setHitbox();
-        });
-        this.character.bubbles.forEach((bubble, i) => {
-            bubble.setHitbox();
-        });
-
-        this.level.endBoss.forEach((boss) => {
-            boss.setHitbox();
-        });
-
         this.level.coinBows.forEach((coinBow) => {
             for (let i = 0; i < coinBow["coins"].length; i++) {
                 const coin = coinBow["coins"][i];

@@ -10,9 +10,9 @@ function initStartScreen() {
         new backGroundObject("./img/1.Sharkie/1.IDLE/18.png", -200, 100),
         new ScreenText("Sharky", 80, 100, "72px"),
         new Buttons(IMAGE_START, 80, 150, 260, 100, "startGame"),
-        //new Buttons(IMAGE_MOVEMENT, 400, 280, 250, 100),
+        new Buttons(IMAGE_MOVEMENT, 400, 280, 250, 100),
         new ScreenText("Movement", 400, 260),
-        //new Buttons(IMAGE_ATTACK, 400, 150, 250, 50),
+        new Buttons(IMAGE_ATTACK, 400, 150, 250, 50),
         new ScreenText("Attack", 400, 130)
     ];
 }

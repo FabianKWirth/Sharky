@@ -32,7 +32,7 @@ class JellyFishDangerous extends JellyFish {
         this.width = 100;
         this.damage = 15;
         this.health = 30;
-        this.fishTypeId=fishTypeId;
+        this.fishTypeId = fishTypeId;
         this.x = spawnPoint;
 
         this.IMAGES_FISH_SWIMMING = this.getFishMovementImages();
@@ -62,14 +62,13 @@ class JellyFishDangerous extends JellyFish {
     getFishMovementImages() {
         const imagePaths = [];
         imagePaths[1] = [];
-        for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Súper dangerous/Green ${i}.png`;
-            imagePaths[1].push(imagePath);
-        }
-
         imagePaths[2] = [];
+        let imagePath = "";
+
         for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Súper dangerous/Pink ${i}.png`;
+            imagePath = `./img/2.Enemy/2 Jelly fish/Súper dangerous/Green ${i}.png`;
+            imagePaths[1].push(imagePath);
+            imagePath = `./img/2.Enemy/2 Jelly fish/Súper dangerous/Pink ${i}.png`;
             imagePaths[2].push(imagePath);
         }
 
@@ -82,16 +81,13 @@ class JellyFishDangerous extends JellyFish {
     */
     getFishDeathImages() {
         const imagePaths = [];
-
         imagePaths[1] = [];
-        for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/green/g${i}.png`;
-            imagePaths[1].push(imagePath);
-        }
-
         imagePaths[2] = [];
+        let imagePath = "";
         for (let i = 1; i <= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
+            imagePath = `./img/2.Enemy/2 Jelly fish/Dead/green/g${i}.png`;
+            imagePaths[1].push(imagePath);
+            imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
             imagePaths[2].push(imagePath);
         }
 

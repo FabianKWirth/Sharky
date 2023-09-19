@@ -37,7 +37,7 @@ class PufferFish extends MoveableObject {
         this.animate();
     }
 
-    
+
     /**
     * Load animation images for the Puffer Fish based on its fish type.
     *
@@ -83,7 +83,7 @@ class PufferFish extends MoveableObject {
     * This method generates a random speed value within a specified range and updates the fish's speed property.
     */
     setRandomFishSpeed() {
-        this.speed = Math.random() * 2 * 1 + 3;
+        this.speed = Math.random() * 4 + 3;
     }
 
 
@@ -135,7 +135,7 @@ class PufferFish extends MoveableObject {
     */
     toggleBubbleSwim() {
         if (this.triggerBubbleSwim()) {
-            if (this.isTransforming() == false) {
+            if (!this.isTransforming()) {
                 if (this.currentSwimMode == 'normal') {
                     this.initBubbleSwim();
                 } else if (this.currentSwimMode == 'bubble') {
@@ -174,10 +174,10 @@ class PufferFish extends MoveableObject {
     * This method updates the Puffer Fish's swim mode, speed, and hitbox height for normal swimming.
     */
     turnAround() {
-        if (this.checkJustTurned() == false) {
+        if (!this.checkJustTurned()) {
             this.speed = this.speed * (-1);
             this.lastTurn = new Date().getTime();
-            if (this.otherDirection == true) {
+            if (this.otherDirection) {
                 this.otherDirection = false;
                 this.lastTurn = new Date().getTime();
             } else {
@@ -196,7 +196,7 @@ class PufferFish extends MoveableObject {
     move() {
         this.x -= this.speed;
         if (this.world != null) {
-            if (this.x < 0 || this.x > this.world.level.level_end_x) {
+            if (this.x < 0 || this.x > world.level.level_end_x) {
                 this.turnAround();
             }
         } else {
@@ -234,7 +234,7 @@ class PufferFish extends MoveableObject {
                     this.playSwimAnimation();
                 }
             }
-        }, 1000/60);
+        }, 1000 / 60);
     }
 
 
@@ -248,7 +248,7 @@ class PufferFish extends MoveableObject {
         setStoppableInterval(() => {
             this.toggleBubbleSwim();
             this.move();
-        }, 1000 / 60);
+        }, 1000 / 30);
     }
 
 
@@ -318,6 +318,7 @@ class PufferFish extends MoveableObject {
     */
     getFishSpecificImagePaths(fishTypeId, imageTypes) {
         const imagePaths = [];
+        let imagePath="";
         switch (imageTypes) {
             case "swimming":
                 for (let i = 1; i <= 5; i++) {
@@ -338,14 +339,12 @@ class PufferFish extends MoveableObject {
                 }
                 break;
             case "dead-swimming":
-                const imagePath = `./img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/${fishTypeId}.1.png`;
+                imagePath = `./img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/${fishTypeId}.1.png`;
                 imagePaths.push(imagePath);
                 break;
             case "dead-bubbleswim":
-                for (let i = 1; i <= 8; i++) {
-                    const imagePath = `./img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/${fishTypeId}.3.png`;
-                    imagePaths.push(imagePath);
-                }
+                imagePath = `./img/2.Enemy/1.Puffer fish (3 color options)/4.DIE/${fishTypeId}.3.png`;
+                imagePaths.push(imagePath);
                 break;
         }
         return imagePaths;

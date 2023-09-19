@@ -58,6 +58,16 @@ function setInputEventListeners() {
 }
 
 
+function addMobileActionMenu() {
+    document.getElementById("mobileActionMenu").classList.remove("d-none");
+}
+
+
+function removeMobileActionMenu() {
+    document.getElementById("mobileActionMenu").classList.add("d-none");
+}
+
+
 /**
  * Prevents the default context menu from appearing when right-clicking on specific images with the given IDs.
  */
@@ -116,7 +126,7 @@ function setTouchDimensions(e) {
     const rect = canvas.getBoundingClientRect();
     let radius = 5;
     touch = e['targetTouches'][0];
-    touchLeft = touch.clientX - rect.right -radius;
+    touchLeft = touch.clientX - rect.right - radius;
     touchRight = touch.clientX + rect.right + radius;
     touchTop = touch.clientY - rect.top - radius;
     touchBottom = touch.clientY - rect.top + radius;

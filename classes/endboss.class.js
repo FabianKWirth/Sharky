@@ -128,14 +128,15 @@ class Endboss extends MoveableObject {
     * @param {number} damage - The amount of damage to inflict.
     */
     hit(damage) {
-        this.health -= damage;
-        this.playHitAudio();
-        world.bossStatusBar.setPercentage((this.health/this.max_health)*100);
-        
-        if (this.isDead()) {
-            this.die();
-        } else {
-            this.lastHit = new Date().getTime();
+        if (damage > 0 && this.isInitiated) {
+            this.health -= damage;
+            playAudio(this.hitAudio);
+            world.bossStatusBar.setPercentage((this.health / this.max_health) * 100);
+            if (this.isDead()) {
+                this.die();
+            } else {
+                this.lastHit = new Date().getTime();
+            }
         }
     }
 
@@ -158,7 +159,8 @@ class Endboss extends MoveableObject {
     */
     die() {
         this.speed = 0;
-        if (this.dead == false) {
+        this.damage = 0;
+        if (!this.dead) {
             this.dead = true;
             setTimeout(() => {
                 endGame("win");
@@ -204,8 +206,8 @@ class Endboss extends MoveableObject {
     */
     moveToCharacter() {
         this.setHitbox();
-        
-        if (this.hitBoxX+this.hitboxWidth < this.world.character.hitBoxX) {
+
+        if (this.hitBoxX + this.hitboxWidth < this.world.character.hitBoxX) {
             this.x += this.speed;
             this.otherDirection = true;
         } else if (this.hitBoxX > this.world.character.hitBoxX) {
@@ -218,7 +220,7 @@ class Endboss extends MoveableObject {
         } else if (this.hitBoxY > this.world.character.hitBoxY) {
             this.y -= this.speed;
         }
-       
+
     }
 
 

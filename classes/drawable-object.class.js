@@ -64,21 +64,19 @@ class DrawableObject {
     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
     */
     draw(ctx) {
-        if (this.img) {
-            try {
+        try {
+            if (this.img) {
+
                 ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-            } catch (e) {
-                console.warn(e);
-                debugger;
-            }
-        } else if (this.textContent) {
-            try {
+
+            } else if (this.textContent) {
                 ctx.fillStyle = this.fontColor;
                 ctx.font = `${this.fontSize} ${this.fontFamily}`;
                 ctx.fillText(this.textContent, this.x, this.y);
-            } catch (e) {
 
             }
+        } catch (e) {
+            console.warn(e);
         }
     }
 

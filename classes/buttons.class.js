@@ -6,9 +6,9 @@
  */
 class Buttons extends DrawableObject {
     /**
-         * The image source for the button in its default state.
-         * @type {string}
-         */
+    * The image source for the button in its default state.
+    * @type {string}
+    */
     IMAGE;
 
     /**
@@ -59,6 +59,8 @@ class Buttons extends DrawableObject {
      * @type {number}
      */
     lastUsage = 0;
+
+    currentImage = "default" //Alternativ "selected"
 
 
     /**
@@ -149,21 +151,27 @@ class Buttons extends DrawableObject {
      * @returns {boolean} Returns `true` if an action is performed, `false` otherwise.
      */
     handleButtonInteraction() {
-        if (World.stopGame == true) {
-            if (this.isMouseOnButton() && isClicking == true) {
+        if (World.stopGame) {
+            if (this.isMouseOnButton() && isClicking) {
                 this.performAction();
                 return true;
-            } else if (this.isTouchOnButton() && isTouching == true) {
+            } else if (this.isTouchOnButton() && isTouching) {
                 this.performAction();
                 return true;
             } else if (this.isMouseOnButton()) {
                 if (this.IMAGE['selected']) {
-                    this.loadImg(this.IMAGE['selected']);
+                    if (this.currentImage != "selected") {
+                        this.currentImage = "selected";
+                        this.loadImg(this.IMAGE['selected']);
+                    }
                     return true;
                 }
             } else {
-                this.loadImg(this.IMAGE['normal']);
-                return false;
+                if (this.currentImage != "normal") {
+                    this.currentImage = "normal";
+                    this.loadImg(this.IMAGE['normal']);
+                    return false;
+                }
             }
         }
     }
@@ -201,7 +209,7 @@ class Buttons extends DrawableObject {
     * of the last usage to prevent rapid, repeated activations.
     */
     performAction() {
-        if (this.isJustUsed() == false) {
+        if (!this.isJustUsed()) {
             if (this.actionName) {
                 if (this.actionName == "startGame") {
                     startGame();

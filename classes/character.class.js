@@ -9,18 +9,24 @@ class Character extends MoveableObject {
      * @type {World}
      */
     world;
+
     /**
      * The audio element for the walking sound of the character.
      * @type {Audio}
      */
     swimming_sound = new Audio("./audio/swim3.mp3");
+
     /**
      * The audio element for the shooting sound of the character.
      * @type {Audio}
      */
     shooting_sound = new Audio("./audio/shoot.mp3");
 
-    hitAudioSrc = "/audio/electric-hurt.mp3";
+    /**
+     * The audio element for the character if getting hit.
+     * @type {Audio}
+     */
+    electric_hit_sound = new Audio("./audio/electric-hurt.mp3");
 
     /**
      * The maximum health of the character.
@@ -174,17 +180,19 @@ class Character extends MoveableObject {
     * @param {number} damage - The amount of damage to inflict on the character.
     */
     hit(damage) {
-        this.health -= damage;
-        this.playHitAudio();
-        let percentage = 0;
-        if (this.isDead()) {
-            this.health = 0;
-            this.die();
-        } else {
-            this.lastHit = new Date().getTime();
-            percentage = this.health / this.max_health * 100;
+        if (damage > 0) {
+            this.health -= damage;
+            playAudio(this.electric_hit_sound);
+            let percentage = 0;
+            if (this.isDead()) {
+                this.health = 0;
+                this.die();
+            } else {
+                this.lastHit = new Date().getTime();
+                percentage = this.health / this.max_health * 100;
+            }
+            this.world.lifeStatusBar.setPercentage(percentage);
         }
-        this.world.lifeStatusBar.setPercentage(percentage);
     }
 
 
@@ -241,9 +249,9 @@ class Character extends MoveableObject {
                 this.imageDeadPoisonId = this.playAnimationOnce(this.IMAGES_DEAD_POISON, this.imageDeadPoisonId);
             } else if (this.isDead()) {
                 this.imageDeadElektroId = this.playAnimationOnce(this.IMAGES_DEAD_ELEKTRO, this.imageDeadElektroId);
-            } else if (this.isHurtPoison() == true) {
+            } else if (this.isHurtPoison()) {
                 this.playAnimation(this.IMAGES_HURT_POISON);
-            } else if (this.isHurt() == true) {
+            } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT_ELEKTRO);
             } else if (!this.bubbleAttackCastable()) {
                 this.playAnimation(this.IMAGES_ATTACK_BUBBLE);
@@ -298,7 +306,7 @@ class Character extends MoveableObject {
     */
     die() {
         this.speed = 0;
-        if (this.dead == false) {
+        if (!this.dead) {
             this.dead = true;
             setTimeout(() => {
                 endGame("loss");
@@ -361,7 +369,7 @@ class Character extends MoveableObject {
         this.otherDirection = false;
         this.world.camera_x = -this.x;
         if (this.x > 2000) {
-            if (world.level.endBoss[0].isInitiated == false) {
+            if (!world.level.endBoss[0].isInitiated) {
 
                 this.initiateEndboss();
                 playBackGroundAudio("./audio/background-dramatic.mp3");
