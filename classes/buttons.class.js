@@ -116,12 +116,11 @@ class Buttons extends DrawableObject {
     * based on the button's state. It uses a stoppable interval to regularly perform these checks and updates.
     */
     checkUserInteraction() {
-        let id = setInterval(() => {
+        setStoppableInterval(() => {
             this.adaptObjectToViewport();
             this.handleButtonInteraction();
             this.setButtonCursor();
         }, 1000 / 30);
-        stoppableIntervalIds.push(id);
     }
 
 

@@ -93,31 +93,21 @@ class World {
     * @constructor
     */
     constructor(canvas, ctx, keyboard) {
+
         this.ctx = ctx;
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.initWorld();
     }
 
-
-    /**
-    * Initializes the game world by setting up elements, collisions, and audio.
-    * @async
-    */
     async initWorld(){
         await this.initWorldElements();
-        console.log("ElementsInitiated");
         World.stopGame = false;
         this.checkCollisions();
         world.draw();
         playBackGroundAudio(musicPath);
     }
 
-
-    /**
-    * Initializes game world elements such as characters, status bars, and levels.
-    * @async
-    */
     async initWorldElements(){
         this.character = new Character();
         this.lifeStatusBar = new StatusBar("life");
@@ -127,7 +117,10 @@ class World {
         this.level = level1;
         this.collectedCoins = 0;
         this.totalCoins = this.level.coinBows.length * 5;
-        this.setWorld();
+        this.setWorld()
+        
+        
+
     }
 
 
@@ -137,6 +130,7 @@ class World {
     */
     setWorld() {
         this.character.world = this;
+
         this.level.endBoss.forEach(endBoss => {
             endBoss.world = this;
         });
