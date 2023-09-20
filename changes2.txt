@@ -1,8 +1,8 @@
-Hallo, auch an dieser Stelle danke für Feedback!
+Hallo, auch an dieser Stelle danke fuers Feedback!
 
 Kamera folgt jetzt weniger schnell der Blickrichtung des Characters wenn er sich dreht.
 
-Die Menü Buttons haben bei mir auch geblinkt, wenn ich in den DevTools die Option "Cache deaktivieren" aktiviert habe. Das ist jetzt nicht mehr so.
+Die Menue Buttons haben bei mir auch geblinkt, wenn ich in den DevTools die Option "Cache deaktivieren" aktiviert habe. Das ist jetzt nicht mehr so.
 
 Es wir jetzt die Notification "please turn your device" eingeblendet
 

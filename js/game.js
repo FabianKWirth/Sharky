@@ -290,7 +290,9 @@ function playBackGroundAudio(url) {
  */
 function playAudio(audioObj) {
     if (!isMuted) {
-        audioObj.volume = 0.05;
-        audioObj.play();
+        if (audioObj) {
+            audioObj.volume = 0.05;
+            audioObj.play();
+        }
     }
 }
