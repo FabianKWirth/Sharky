@@ -87,6 +87,7 @@ function init() {
     keyboard = new Keyboard();
     setInputEventListeners();
     showStartScreen(canvas, ctx);
+    checkDeviceAlignment();
 }
 
 
@@ -179,7 +180,7 @@ function clearAllIntervals() {
 
 /**
  * Toggles fullscreen mode for the game.
- **/
+ */
 function toggleFullscreen() {
     const fullscreenElement = document.getElementById("fullscreen");
     if (!document.fullscreenElement) {

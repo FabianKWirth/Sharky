@@ -50,7 +50,7 @@ class Character extends MoveableObject {
      * The amount of poison affecting the character.
      * @type {number}
      */
-    posionAmount = 0;
+    poisonAmount = 0;
 
     /**
      * The maximum poison level the character can have.
@@ -82,6 +82,12 @@ class Character extends MoveableObject {
      */
     imageDeadPoisonId = 0;
 
+
+    /**
+    * Represents the type of damage for the character. It can be 'Poison' or 'Electric'.
+    * @type {string}
+    */
+    deathType;
 
     /**
      * An array of image paths for the character's swimming animation.
@@ -186,7 +192,7 @@ class Character extends MoveableObject {
             let percentage = 0;
             if (this.isDead()) {
                 this.health = 0;
-                this.die();
+                this.die("Electric");
             } else {
                 this.lastHit = new Date().getTime();
                 percentage = this.health / this.max_health * 100;
@@ -245,10 +251,12 @@ class Character extends MoveableObject {
     */
     animate() {
         setStoppableInterval(() => {
-            if (this.isDeadPoison()) {
-                this.imageDeadPoisonId = this.playAnimationOnce(this.IMAGES_DEAD_POISON, this.imageDeadPoisonId);
-            } else if (this.isDead()) {
-                this.imageDeadElektroId = this.playAnimationOnce(this.IMAGES_DEAD_ELEKTRO, this.imageDeadElektroId);
+            if (this.isDead()) {
+                if (this.deathType == "Poison") {
+                    this.imageDeadPoisonId = this.playAnimationOnce(this.IMAGES_DEAD_POISON, this.imageDeadPoisonId);
+                } else {
+                    this.imageDeadElektroId = this.playAnimationOnce(this.IMAGES_DEAD_ELEKTRO, this.imageDeadElektroId);
+                }
             } else if (this.isHurtPoison()) {
                 this.playAnimation(this.IMAGES_HURT_POISON);
             } else if (this.isHurt()) {
@@ -270,12 +278,15 @@ class Character extends MoveableObject {
     * @param {number} amount - The amount of poison to set on the character.
     */
     setPoison(amount) {
-        this.posionAmount += amount;
-        this.world.poisonStatusBar.setPercentage(this.posionAmount / this.poisonMax * 100);
+        this.poisonAmount += amount;
+        this.health = this.health - amount * 8;
+        this.world.poisonStatusBar.setPercentage(this.poisonAmount / this.poisonMax * 100);
 
-        if (this.isDeadPoison()) {
-            this.die();
+        if (this.isDead()) {
+            this.die("Poison");
         } else {
+            let percentage = this.health / this.max_health * 100;
+            this.world.lifeStatusBar.setPercentage(percentage);
             this.lastPoisoned = new Date().getTime();
         }
     }
@@ -292,20 +303,12 @@ class Character extends MoveableObject {
 
 
     /**
-    * Check if the character is dead due to poison damage.
-    * @returns {boolean} `true` if the character's poison amount has reached or exceeded the poison maximum; otherwise, `false`.
-    */
-    isDeadPoison() {
-        return this.posionAmount >= this.poisonMax;
-    }
-
-
-    /**
     * Handle the character's death.
     * This method stops the character's movement and triggers the end of the game with a loss after a delay.
     */
-    die() {
+    die(type) {
         this.speed = 0;
+        this.deathType = type;
         if (!this.dead) {
             this.dead = true;
             setTimeout(() => {
@@ -325,13 +328,52 @@ class Character extends MoveableObject {
             this.currentImage = 0;
             playAudio(this.shooting_sound);
             setTimeout(() => {
-                if (this.otherDirection == true) {
-                    this.bubbles.push(new BubbleAttack((this.hitBoxX + 10), (this.hitBoxY + 15), -this.speed));
-                } else {
-                    this.bubbles.push(new BubbleAttack((this.hitBoxX + 90), (this.hitBoxY + 15), this.speed));
-                }
+                this.castAttack();
+
             }, 400);
             this.lastAttack = new Date().getTime();
+        }
+    }
+
+
+    /**
+    * Represents a character's attack action.
+    * If the character has poison, it casts a poison attack; otherwise, it casts a normal attack.
+    */
+    castAttack() {
+        if (this.poisonAmount > 0) {
+            this.castPoisonAttack();
+        } else {
+            this.castNormalAttack();
+        }
+
+    }
+
+
+    /**
+    * Casts a poison attack.
+    * @function
+    */
+    castPoisonAttack() {
+        if (this.otherDirection) {
+            this.bubbles.push(new PosionBubbleAttack((this.hitBoxX + 10), (this.hitBoxY + 15), -this.speed));
+        } else {
+            this.bubbles.push(new PosionBubbleAttack((this.hitBoxX + 90), (this.hitBoxY + 15), this.speed));
+        }
+        this.poisonAmount -= 10;
+        this.world.poisonStatusBar.setPercentage(this.poisonAmount / this.poisonMax * 100);
+    }
+
+
+    /**
+    * Casts a normal attack.
+    * @function
+    */
+    castNormalAttack() {
+        if (this.otherDirection) {
+            this.bubbles.push(new BubbleAttack((this.hitBoxX + 10), (this.hitBoxY + 15), -this.speed));
+        } else {
+            this.bubbles.push(new BubbleAttack((this.hitBoxX + 90), (this.hitBoxY + 15), this.speed));
         }
     }
 
@@ -370,7 +412,6 @@ class Character extends MoveableObject {
         this.world.camera_x = -this.x;
         if (this.x > 2000) {
             if (!world.level.endBoss[0].isInitiated) {
-
                 this.initiateEndboss();
                 playBackGroundAudio("./audio/background-dramatic.mp3");
             }

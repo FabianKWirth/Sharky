@@ -34,17 +34,17 @@
  * @extends {JellyFish} - The base class for Jellyfish.
  */
 class JellyFishNormal extends JellyFish {
-    
+
     /**
      * An array of image paths representing the Jellyfish's swimming animation frames.
      * @type {string[]}
      */
     IMAGES_FISH_SWIMMING;
 
-     /**
-     * An array of image paths representing the Jellyfish's dying animation frames.
-     * @type {string[]}
-     */
+    /**
+    * An array of image paths representing the Jellyfish's dying animation frames.
+    * @type {string[]}
+    */
     IMAGES_FISH_DYING;
 
     /**
@@ -60,9 +60,9 @@ class JellyFishNormal extends JellyFish {
     * @param {number} fishTypeId - The unique identifier for the type of Jellyfish.
     * @param {number} spawnPoint - The initial x-coordinate where the Jellyfish spawns.
     */
-    constructor(fishTypeId,spawnPoint) {
+    constructor(fishTypeId, spawnPoint) {
         super();
-       
+
         this.damage = 5;
         this.health = 20;
         this.height = 80;
@@ -90,7 +90,7 @@ class JellyFishNormal extends JellyFish {
         this.hitBoxY = this.y + 2;
     }
 
-    
+
     /**
     * Gets the image paths for the swimming animation frames of the Jellyfish.
     * @returns {string[][]} An array of image paths for swimming animations for different types of Jellyfish.
@@ -98,14 +98,13 @@ class JellyFishNormal extends JellyFish {
     getFishMovementImages() {
         const imagePaths = [];
         imagePaths[1] = [];
-        for (let i = 1; i &lt;= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Lila ${i}.png`;
-            imagePaths[1].push(imagePath);
-        }
-
         imagePaths[2] = [];
+        let imagePath = "";
+
         for (let i = 1; i &lt;= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Yellow ${i}.png`;
+            imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Lila ${i}.png`;
+            imagePaths[1].push(imagePath);
+            imagePath = `./img/2.Enemy/2 Jelly fish/Regular damage/Yellow ${i}.png`;
             imagePaths[2].push(imagePath);
         }
 
@@ -119,16 +118,14 @@ class JellyFishNormal extends JellyFish {
     */
     getFishDeathImages() {
         const imagePaths = [];
-
         imagePaths[1] = [];
-        for (let i = 1; i &lt;= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
-            imagePaths[1].push(imagePath);
-        }
-
         imagePaths[2] = [];
+        let imagePath = "";
+
         for (let i = 1; i &lt;= 4; i++) {
-            const imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Yellow/y${i}.png`;
+            imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Lila/L${i}.png`;
+            imagePaths[1].push(imagePath);
+            imagePath = `./img/2.Enemy/2 Jelly fish/Dead/Yellow/y${i}.png`;
             imagePaths[2].push(imagePath);
         }
 
@@ -145,13 +142,13 @@ class JellyFishNormal extends JellyFish {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BubbleAttack.html">BubbleAttack</a></li><li><a href="Buttons.html">Buttons</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinBow.html">CoinBow</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishDangerous.html">JellyFishDangerous</a></li><li><a href="JellyFishNormal.html">JellyFishNormal</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="ScreenText.html">ScreenText</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="World.html">World</a></li><li><a href="backGroundObject.html">backGroundObject</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BubbleAttack.html">BubbleAttack</a></li><li><a href="Buttons.html">Buttons</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinBow.html">CoinBow</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishDangerous.html">JellyFishDangerous</a></li><li><a href="JellyFishNormal.html">JellyFishNormal</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="PosionBubbleAttack.html">PosionBubbleAttack</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="ScreenText.html">ScreenText</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="World.html">World</a></li><li><a href="backGroundObject.html">backGroundObject</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:06:13 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Sep 20 2023 02:05:50 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

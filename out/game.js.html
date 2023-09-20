@@ -112,11 +112,10 @@ function init() {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
     clearCanvas(ctx);
-
     keyboard = new Keyboard();
     setInputEventListeners();
-
     showStartScreen(canvas, ctx);
+    checkDeviceAlignment();
 }
 
 
@@ -134,11 +133,10 @@ function showStartScreen(canvas, ctx) {
  * Starts the game by resetting menus, initializing the game world, and beginning gameplay. Verifies that a game is only started once.
  */
 function startGame() {
+    addMobileActionMenu();
     resetDrawingOfMenus();
     if (checkIfGameJustStarted() == false) {
         world = new World(canvas, ctx, keyboard);
-        World.stopGame = false;
-        world.draw();
     }
 }
 
@@ -174,6 +172,7 @@ function clearCanvas(ctx) {
  * @param {string} type - The type of the end screen (e.g., "win", "lose").
  */
 function endGame(type) {
+    removeMobileActionMenu();
     clearAllIntervals();
     World.stopGame = true;
     endScreen = new Menu(canvas, ctx, type);
@@ -195,7 +194,7 @@ function resetDrawingOfMenus() {
         endScreen.stopDrawing();
         endScreen = null;
     }
-    screenElements =[];
+    screenElements = [];
 }
 
 
@@ -209,7 +208,7 @@ function clearAllIntervals() {
 
 /**
  * Toggles fullscreen mode for the game.
- **/
+ */
 function toggleFullscreen() {
     const fullscreenElement = document.getElementById("fullscreen");
     if (!document.fullscreenElement) {
@@ -278,18 +277,18 @@ function toggleMute() {
         isMuted = true;
         stopBackgroundMusic();
         document.getElementById("muteButton").src = './img/6.Botones/Mute/muteIcon.png';
-        
+
     }
 }
 
 /**
  * Stops and resets the background music audio playback and removes the audio element from the DOM.
  */
-function stopBackgroundMusic(){
+function stopBackgroundMusic() {
     let backgroundAudio = document.getElementById('background-music');
-        if (backgroundAudio) {
-            backgroundAudio.remove();
-        }
+    if (backgroundAudio) {
+        backgroundAudio.remove();
+    }
 }
 
 
@@ -307,7 +306,7 @@ function playBackGroundAudio(url) {
     newAudio.src = url;
     document.body.appendChild(newAudio);
     newAudio.style.display = 'none';
-    if(!isMuted){
+    if (!isMuted) {
         newAudio.play();
     }
 }
@@ -332,13 +331,13 @@ function playAudio(audioObj) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#backgroundMusicId">backgroundMusicId</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfGameJustStarted">checkIfGameJustStarted</a></li><li><a href="global.html#clearAllIntervals">clearAllIntervals</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#ctx">ctx</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endScreen">endScreen</a></li><li><a href="global.html#exitFullscreen">exitFullscreen</a></li><li><a href="global.html#gameActive">gameActive</a></li><li><a href="global.html#hoverFullScreenButton">hoverFullScreenButton</a></li><li><a href="global.html#hoverStartButton">hoverStartButton</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isClicking">isClicking</a></li><li><a href="global.html#isFullscreen">isFullscreen</a></li><li><a href="global.html#isMuted">isMuted</a></li><li><a href="global.html#isTouching">isTouching</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#mouseX">mouseX</a></li><li><a href="global.html#mouseY">mouseY</a></li><li><a href="global.html#musicPath">musicPath</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playBackGroundAudio">playBackGroundAudio</a></li><li><a href="global.html#preventShowingContextMenu">preventShowingContextMenu</a></li><li><a href="global.html#requestFullscreen">requestFullscreen</a></li><li><a href="global.html#resetDrawingOfMenus">resetDrawingOfMenus</a></li><li><a href="global.html#screenElements">screenElements</a></li><li><a href="global.html#setInputDownListeners">setInputDownListeners</a></li><li><a href="global.html#setInputEventListeners">setInputEventListeners</a></li><li><a href="global.html#setInputLeftListeners">setInputLeftListeners</a></li><li><a href="global.html#setInputRightListeners">setInputRightListeners</a></li><li><a href="global.html#setInputUpListeners">setInputUpListeners</a></li><li><a href="global.html#setKeyboardListeners">setKeyboardListeners</a></li><li><a href="global.html#setMouseListeners">setMouseListeners</a></li><li><a href="global.html#setSpaceListeners">setSpaceListeners</a></li><li><a href="global.html#setStoppableInterval">setStoppableInterval</a></li><li><a href="global.html#setTouchDimensions">setTouchDimensions</a></li><li><a href="global.html#setTouchListeners">setTouchListeners</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#startScreen">startScreen</a></li><li><a href="global.html#stopBackgroundMusic">stopBackgroundMusic</a></li><li><a href="global.html#stoppableIntervalIds">stoppableIntervalIds</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#touchBottom">touchBottom</a></li><li><a href="global.html#touchLeft">touchLeft</a></li><li><a href="global.html#touchRight">touchRight</a></li><li><a href="global.html#touchTop">touchTop</a></li><li><a href="global.html#unhoverFullScreenButton">unhoverFullScreenButton</a></li><li><a href="global.html#unhoverStartButton">unhoverStartButton</a></li><li><a href="global.html#world">world</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addMobileActionMenu">addMobileActionMenu</a></li><li><a href="global.html#backgroundMusicId">backgroundMusicId</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkDeviceAlignment">checkDeviceAlignment</a></li><li><a href="global.html#checkIfGameJustStarted">checkIfGameJustStarted</a></li><li><a href="global.html#checkIfTurnSuggested">checkIfTurnSuggested</a></li><li><a href="global.html#clearAllIntervals">clearAllIntervals</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#ctx">ctx</a></li><li><a href="global.html#deleteTurnNotification">deleteTurnNotification</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endScreen">endScreen</a></li><li><a href="global.html#exitFullscreen">exitFullscreen</a></li><li><a href="global.html#gameActive">gameActive</a></li><li><a href="global.html#hoverFullScreenButton">hoverFullScreenButton</a></li><li><a href="global.html#hoverStartButton">hoverStartButton</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isClicking">isClicking</a></li><li><a href="global.html#isFullscreen">isFullscreen</a></li><li><a href="global.html#isMuted">isMuted</a></li><li><a href="global.html#isTouching">isTouching</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#mouseX">mouseX</a></li><li><a href="global.html#mouseY">mouseY</a></li><li><a href="global.html#musicPath">musicPath</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playBackGroundAudio">playBackGroundAudio</a></li><li><a href="global.html#preventShowingContextMenu">preventShowingContextMenu</a></li><li><a href="global.html#removeMobileActionMenu">removeMobileActionMenu</a></li><li><a href="global.html#renderTurnNotification">renderTurnNotification</a></li><li><a href="global.html#requestFullscreen">requestFullscreen</a></li><li><a href="global.html#resetDrawingOfMenus">resetDrawingOfMenus</a></li><li><a href="global.html#screenElements">screenElements</a></li><li><a href="global.html#setInputDownListeners">setInputDownListeners</a></li><li><a href="global.html#setInputEventListeners">setInputEventListeners</a></li><li><a href="global.html#setInputLeftListeners">setInputLeftListeners</a></li><li><a href="global.html#setInputRightListeners">setInputRightListeners</a></li><li><a href="global.html#setInputUpListeners">setInputUpListeners</a></li><li><a href="global.html#setKeyboardListeners">setKeyboardListeners</a></li><li><a href="global.html#setMouseListeners">setMouseListeners</a></li><li><a href="global.html#setSpaceListeners">setSpaceListeners</a></li><li><a href="global.html#setStoppableInterval">setStoppableInterval</a></li><li><a href="global.html#setTouchDimensions">setTouchDimensions</a></li><li><a href="global.html#setTouchListeners">setTouchListeners</a></li><li><a href="global.html#setWindowChangeListeners">setWindowChangeListeners</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#startScreen">startScreen</a></li><li><a href="global.html#stopBackgroundMusic">stopBackgroundMusic</a></li><li><a href="global.html#stoppableIntervalIds">stoppableIntervalIds</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#touchBottom">touchBottom</a></li><li><a href="global.html#touchLeft">touchLeft</a></li><li><a href="global.html#touchRight">touchRight</a></li><li><a href="global.html#touchTop">touchTop</a></li><li><a href="global.html#turnNotificationActive">turnNotificationActive</a></li><li><a href="global.html#unhoverFullScreenButton">unhoverFullScreenButton</a></li><li><a href="global.html#unhoverStartButton">unhoverStartButton</a></li><li><a href="global.html#world">world</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:07:14 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Sep 20 2023 02:05:56 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

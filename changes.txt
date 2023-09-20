@@ -1,3 +1,12 @@
-Kamera folgt jetzt weniger schnell der Blickrichtung des Characters wenn er sich dreht
+Hallo, auch an dieser Stelle danke für Feedback!
 
-Buttons haben bei mir auch geblinkt, wenn ich in den DevTools die Option "Cache deaktivieren" aktiviert habe. Das ist jetzt nicht mehr so.
+Kamera folgt jetzt weniger schnell der Blickrichtung des Characters wenn er sich dreht.
+
+Die Menü Buttons haben bei mir auch geblinkt, wenn ich in den DevTools die Option "Cache deaktivieren" aktiviert habe. Das ist jetzt nicht mehr so.
+
+Es wir jetzt die Notification "please turn your device" eingeblendet
+
+Bzgl den Poison Bottles, wenn man diese jetzt aufsammelt, sind die nächsten Angriffe verstärkt, bis der Character kein kein Posion mehr hat.
+Weil es extra eine Animation dafür gibt und weil ich das schon drin hatte bekommt der Character jetzt noch ein wenig Schaden, wenn er eine PoisonBottle aufsammelt.
+Das würde ich gerne drinnen lassen, weil ich das Sinnvoll finde. Wenn das ok ist.
+

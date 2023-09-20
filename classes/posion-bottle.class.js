@@ -14,7 +14,7 @@ class PoisonBottle extends MoveableObject {
      * The amount of poison in the bottle.
      * @type {number}
      */
-    poisonAmount = 40;
+    poisonAmount = 20;
 
     
     /**

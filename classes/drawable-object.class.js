@@ -64,7 +64,6 @@ class DrawableObject {
     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
     */
     draw(ctx) {
-        try {
             if (this.img) {
 
                 ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
@@ -75,9 +74,6 @@ class DrawableObject {
                 ctx.fillText(this.textContent, this.x, this.y);
 
             }
-        } catch (e) {
-            console.warn(e);
-        }
     }
 
 

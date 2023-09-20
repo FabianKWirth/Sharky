@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: coin-bow.class.js</title>
+    <title>JSDoc: Source: poison-bubble-attack.class.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: coin-bow.class.js</h1>
+    <h1 class="page-title">Source: poison-bubble-attack.class.js</h1>
 
     
 
@@ -27,46 +27,33 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Class representing a CoinBow, a collection of Coin objects arranged in a bow-like pattern.
- * Extends the MoveableObject class.
+ * Class representing a Bubble Attack.
+ * @extends MoveableObject
  */
-class CoinBow extends MoveableObject{
+class PosionBubbleAttack extends BubbleAttack {
 
-    /**
-    * An array to store the Coin objects in the CoinBow.
-    *
-    * @type {Coin[]}
-    */
-    coins=[];
+    posionCost = 10;
 
-    /**
-     * Create a new CoinBow object.
-     *
-     * @param {number} xStart - The starting x-coordinate for the CoinBow.
-     * @param {number} yStart - The starting y-coordinate for the CoinBow.
-     */
-    constructor(xStart,yStart){
+    constructor(startX, startY, speed) {
         super();
-        this.createCoinbow(xStart,yStart);
+        this.loadImg("./img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png");
+        this.loadImages(["./img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png"]);
+        this.y = startY;
+        this.x = startX;
+        this.speed = speed * 10;
+        this.height = 20;
+        this.width = 20;
+        this.damage = 150;
+
+        this.animate();
+        this.move();
     }
 
 
-    /**
-    * Create a bow-like arrangement of Coin objects within the CoinBow.
-    *
-    * @param {number} xStart - The starting x-coordinate for the CoinBow.
-    * @param {number} yStart - The starting y-coordinate for the CoinBow.
-    */
-    createCoinbow(xStart,yStart){
-        let yRise=60;
-        this.x=xStart;
-        this.y=yStart;
-        for (let i = 0; i &lt; 5; i++) {
-            this.coins[i]=new Coin(this.x,this.y);
-            this.x+=60;
-            this.y-=yRise;
-            yRise-=40;
-        }
+    animate() {
+        setStoppableInterval(() => {
+            this.playAnimation(["./img/1.Sharkie/4.Attack/Bubble trap/Poisoned Bubble (for whale).png"]);
+        }, 1000 / 10);
     }
 }</code></pre>
         </article>

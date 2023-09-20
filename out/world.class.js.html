@@ -113,14 +113,15 @@
     static stopGame = true;
 
 
-     /**
-     * Creates a new instance of the game world.
-     * @param {HTMLCanvasElement} canvas - The game canvas element.
-     * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
-     * @param {Keyboard} keyboard - The keyboard input manager.
-     * @constructor
-     */
+    /**
+    * Creates a new instance of the game world.
+    * @param {HTMLCanvasElement} canvas - The game canvas element.
+    * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+    * @param {Keyboard} keyboard - The keyboard input manager.
+    * @constructor
+    */
     constructor(canvas, ctx, keyboard) {
+
         this.ctx = ctx;
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -132,8 +133,12 @@
         this.level = level1;
         this.collectedCoins = 0;
         this.totalCoins = this.level.coinBows.length * 5;
-        this.setWorld();
-        this.checkCollisions();
+        Promise.resolve(this.setWorld()).then(() => {
+            World.stopGame = false;
+            world.draw();
+            this.checkCollisions();
+        });
+
         playBackGroundAudio(musicPath);
     }
 
@@ -147,10 +152,6 @@
 
         this.level.endBoss.forEach(endBoss => {
             endBoss.world = this;
-        });
-
-        this.level.enemies.forEach(enemy => {
-            enemy.world = this;
         });
     }
 
@@ -183,11 +184,11 @@
     * Draws the status bars (e.g., life, coin, poison) on the game canvas.
     * @memberof World
     */
-    drawStatusBars(){
+    drawStatusBars() {
         this.addToMap(this.lifeStatusBar);
         this.addToMap(this.coinStatusBar);
         this.addToMap(this.poisonStatusBar);
-        if(this.bossStatusBar){
+        if (this.bossStatusBar) {
             this.addToMap(this.bossStatusBar);
         }
     }
@@ -197,7 +198,7 @@
     * Draws the background objects on the game canvas.
     * @memberof World
     */
-    drawBackGround(){
+    drawBackGround() {
         this.addObjectsToMap(this.level.backGroundObjects);
     };
 
@@ -206,7 +207,7 @@
     * Draws the character and their bubbles on the game canvas.
     * @memberof World
     */
-    drawCharacter(){
+    drawCharacter() {
         this.addToMap(this.character);
         this.character.bubbles.forEach((bubble) => {
             this.addObjectsToMap(bubble);
@@ -218,9 +219,8 @@
     * Draws enemies, poison bottles, and the end boss on the game canvas.
     * @memberof World
     */
-    drawEnemies(){
+    drawEnemies() {
         this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.level.poisonBottles);
         this.addObjectsToMap(this.level.endBoss);
     }
 
@@ -229,7 +229,7 @@
     * Draws poison bottles, coins on the game canvas.
     * @memberof World
     */
-    drawOtherObjects(){
+    drawOtherObjects() {
         this.addObjectsToMap(this.level.poisonBottles);
         this.level.coinBows.forEach((coinBow) => {
             this.addObjectsToMap(coinBow.coins);
@@ -243,13 +243,12 @@
     * @param {number} x - The x-coordinate of the character's position.
     */
     cameraFollow(x) {
-
         x = Math.abs(x);
 
-        if (this.character.otherDirection == true &amp;&amp; this.cameraOffset > -400) {
-            this.cameraOffset -= 10;
-        } else if (this.character.otherDirection == false &amp;&amp; this.cameraOffset &lt; -80) {
-            this.cameraOffset += 10;
+        if (this.character.otherDirection &amp;&amp; this.cameraOffset > -400) {
+            this.cameraOffset -= 6;
+        } else if (!this.character.otherDirection &amp;&amp; this.cameraOffset &lt; -80) {
+            this.cameraOffset += 6;
         }
         let cameraX = x + this.cameraOffset;
 
@@ -285,10 +284,10 @@
             this.poisonBottleHitsCharacter();
             this.bubbleHitsEnemies();
             this.characterCollectsCoins();
-        }, 1000 / 60);
+        }, 1000 / 20);
     }
 
-    
+
     /**
     * Handles character collection of coins from coin bows in the game.
     * @memberof World
@@ -297,6 +296,7 @@
         this.level.coinBows.forEach((coinBow) => {
             for (let i = 0; i &lt; coinBow["coins"].length; i++) {
                 const coin = coinBow["coins"][i];
+                coin.setHitbox();
                 if (this.character.isColliding(coin)) {
                     coin.collectCoin(world, coinBow, i);
                 }
@@ -311,6 +311,8 @@
     */
     enemyHitsCharacter() {
         this.level.enemies.forEach((enemy) => {
+            enemy.setHitbox();
+            this.character.setHitbox();
             if (this.character.isColliding(enemy)) {
                 this.character.hit(enemy.damage);
             }
@@ -324,6 +326,7 @@
     */
     poisonBottleHitsCharacter() {
         this.level.poisonBottles.forEach((poisonBottle, i) => {
+            poisonBottle.setHitbox();
             if (this.character.isColliding(poisonBottle)) {
                 this.character.setPoison(poisonBottle.poisonAmount);
                 this.level.poisonBottles.splice(i, 1);
@@ -339,6 +342,7 @@
     */
     bubbleHitsEnemies() {
         this.character.bubbles.forEach((bubble, i) => {
+            bubble.setHitbox();
             this.level.enemies.forEach((enemy) => {
                 if (bubble.isColliding(enemy)) {
                     enemy.hit(bubble.damage);
@@ -346,9 +350,10 @@
                 }
             });
             this.level.endBoss.forEach((boss, i) => {
+                boss.setHitbox();
                 if (bubble.isColliding(boss)) {
                     boss.hit(bubble.damage);
-                        this.character.bubbles.splice(i, 1);
+                    this.character.bubbles.splice(i, 1);
                 }
             });
         });
@@ -356,25 +361,10 @@
 
 
     /**
-    * Sets the hitboxes for the game entities, including the character, enemies, poison bottles, coins, bubbles, and end boss.
+    * Sets the hitboxes for the game entities, including the character, poison bottles, coins, bubbles, and end boss.
     * @memberof World
     */
     setHitboxes() {
-        this.character.setHitbox();
-        this.level.enemies.forEach((enemy) => {
-            enemy.setHitbox();
-        });
-        this.level.poisonBottles.forEach((poisonBottle, i) => {
-            poisonBottle.setHitbox();
-        });
-        this.character.bubbles.forEach((bubble, i) => {
-            bubble.setHitbox();
-        });
-
-        this.level.endBoss.forEach((boss) => {
-            boss.setHitbox();
-        });
-
         this.level.coinBows.forEach((coinBow) => {
             for (let i = 0; i &lt; coinBow["coins"].length; i++) {
                 const coin = coinBow["coins"][i];
@@ -448,13 +438,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BubbleAttack.html">BubbleAttack</a></li><li><a href="Buttons.html">Buttons</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinBow.html">CoinBow</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishDangerous.html">JellyFishDangerous</a></li><li><a href="JellyFishNormal.html">JellyFishNormal</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="ScreenText.html">ScreenText</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="World.html">World</a></li><li><a href="backGroundObject.html">backGroundObject</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BubbleAttack.html">BubbleAttack</a></li><li><a href="Buttons.html">Buttons</a></li><li><a href="Character.html">Character</a></li><li><a href="Coin.html">Coin</a></li><li><a href="CoinBow.html">CoinBow</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="JellyFish.html">JellyFish</a></li><li><a href="JellyFishDangerous.html">JellyFishDangerous</a></li><li><a href="JellyFishNormal.html">JellyFishNormal</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Menu.html">Menu</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="PoisonBottle.html">PoisonBottle</a></li><li><a href="PosionBubbleAttack.html">PosionBubbleAttack</a></li><li><a href="PufferFish.html">PufferFish</a></li><li><a href="ScreenText.html">ScreenText</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="World.html">World</a></li><li><a href="backGroundObject.html">backGroundObject</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:06:13 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Sep 20 2023 02:05:50 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

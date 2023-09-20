@@ -97,6 +97,18 @@ class World {
         this.ctx = ctx;
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.initWorld();
+    }
+
+    async initWorld(){
+        await this.initWorldElements();
+        World.stopGame = false;
+        this.checkCollisions();
+        world.draw();
+        playBackGroundAudio(musicPath);
+    }
+
+    async initWorldElements(){
         this.character = new Character();
         this.lifeStatusBar = new StatusBar("life");
         this.coinStatusBar = new StatusBar("coin");
@@ -105,13 +117,10 @@ class World {
         this.level = level1;
         this.collectedCoins = 0;
         this.totalCoins = this.level.coinBows.length * 5;
-        Promise.resolve(this.setWorld()).then(() => {
-            World.stopGame = false;
-            world.draw();
-            this.checkCollisions();
-        });
+        this.setWorld()
+        
+        
 
-        playBackGroundAudio(musicPath);
     }
 
 
@@ -193,7 +202,6 @@ class World {
     */
     drawEnemies() {
         this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.level.poisonBottles);
         this.addObjectsToMap(this.level.endBoss);
     }
 
@@ -216,7 +224,6 @@ class World {
     * @param {number} x - The x-coordinate of the character's position.
     */
     cameraFollow(x) {
-
         x = Math.abs(x);
 
         if (this.character.otherDirection && this.cameraOffset > -400) {

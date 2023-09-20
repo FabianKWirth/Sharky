@@ -76,6 +76,13 @@ let mouseY;
 
 
 /**
+ * Represents the state of notification activation.
+ * @type {boolean}
+ */
+let turnNotificationActive = false;
+
+
+/**
  * Sets up input event listeners for keyboard, mouse, and touch events.
  */
 function setInputEventListeners() {
@@ -83,6 +90,7 @@ function setInputEventListeners() {
     setMouseListeners();
     setTouchListeners();
     preventShowingContextMenu();
+    setWindowChangeListeners();
 }
 
 
@@ -144,7 +152,7 @@ function setTouchDimensions(e) {
     const rect = canvas.getBoundingClientRect();
     let radius = 5;
     touch = e['targetTouches'][0];
-    touchLeft = touch.clientX - rect.right -radius;
+    touchLeft = touch.clientX - rect.right - radius;
     touchRight = touch.clientX + rect.right + radius;
     touchTop = touch.clientY - rect.top - radius;
     touchBottom = touch.clientY - rect.top + radius;
@@ -156,7 +164,6 @@ function setTouchDimensions(e) {
  * Sets up touch event listeners to handle touchstart and touchend events.
  */
 function setTouchListeners() {
-
     canvas.addEventListener("touchmove", (e) => {
         setTouchDimensions(e);
     }, { passive: true });
@@ -191,7 +198,6 @@ function setInputUpListeners() {
 }
 
 
-
 /** 
  Touch event listener for inputDown
 */
@@ -206,6 +212,7 @@ function setInputDownListeners() {
     });
 }
 
+
 /** 
  Touch event listener for inputLeft
 */
@@ -218,6 +225,7 @@ function setInputLeftListeners() {
         keyboard.unsetInput("ArrowLeft");
     });
 }
+
 
 /** 
  Touch event listener for inputRight
@@ -237,7 +245,6 @@ function setInputRightListeners() {
  Touch event listener for spaceBar-Button
 */
 function setSpaceListeners() {
-
     document.getElementById('inputSpace').addEventListener('touchstart', () => {
         keyboard.setInput("Space");
     }, { passive: true });
@@ -249,38 +256,56 @@ function setSpaceListeners() {
 
 
 /**
- * Changes the image source to a hover state when the mouse hovers over the element.
- * @param {HTMLElement} element - The HTML element to apply the hover effect to.
+ * Sets up event listeners for the window's "resize" event.
+ * When the window is resized, it triggers the checkDeviceAlignment function.
  */
-function hoverStartButton(element) {
-    element.setAttribute('src', './img/6.Botones/Start/2.png');
+function setWindowChangeListeners(){
+    window.addEventListener("resize", (event) => {
+        checkDeviceAlignment();
+    });
 }
 
 
 /**
- * Reverts the image source to its original state when the mouse is no longer hovering over the element.
- * @param {HTMLElement} element - The HTML element to revert the image source for.
+ * Checks the alignment of the device and handles turn notifications accordingly.
+ * If a turn is suggested based on the device alignment, it renders a notification.
+ * If the device alignment is not suggesting a turn, it deletes any existing turn notifications.
  */
-function unhoverStartButton(element) {
-    element.setAttribute('src', './img/6.Botones/Start/1.png');
+function checkDeviceAlignment() {
+    if (!turnNotificationActive) {
+        if (checkIfTurnSuggested()) {
+            renderTurnNotification();
+            setTimeout(() => {
+                deleteTurnNotification();
+            }, 4000);
+        } else {
+            deleteTurnNotification();
+            turnNotificationActive = false;
+        }
+    }
 }
 
 
 /**
- * Changes the image source to a hover state when the mouse hovers over the element.
- * @param {HTMLElement} element - The HTML element to apply the hover effect to.
+ * Checks if it's suggested to turn the device based on screen dimensions.
+ * @returns {boolean} - True if turning the device is suggested, otherwise false.
  */
-function hoverFullScreenButton(element) {
-    element.setAttribute('src', './img/6.Botones/Full Screen/Mesa de trabajo 7.png');
-}
+function checkIfTurnSuggested() {
+    // Get the device's width and height
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-
-/**
- * Reverts the image source to its original state when the mouse is no longer hovering over the element.
- * @param {HTMLElement} element - The HTML element to revert the image source for.
- */
-function unhoverFullScreenButton(element) {
-    element.setAttribute('src', './img/6.Botones/Full Screen/Mesa de trabajo 9.png');
+    // Check if either width or height is greater than 720px
+    if (screenWidth &lt; 720 || screenHeight &lt; 720) {
+        // Check if height is greater than width
+        if (screenHeight > screenWidth) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 </code></pre>
@@ -293,13 +318,13 @@ function unhoverFullScreenButton(element) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#backgroundMusicId">backgroundMusicId</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkIfGameJustStarted">checkIfGameJustStarted</a></li><li><a href="global.html#clearAllIntervals">clearAllIntervals</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#ctx">ctx</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endScreen">endScreen</a></li><li><a href="global.html#exitFullscreen">exitFullscreen</a></li><li><a href="global.html#gameActive">gameActive</a></li><li><a href="global.html#hoverFullScreenButton">hoverFullScreenButton</a></li><li><a href="global.html#hoverStartButton">hoverStartButton</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isClicking">isClicking</a></li><li><a href="global.html#isFullscreen">isFullscreen</a></li><li><a href="global.html#isMuted">isMuted</a></li><li><a href="global.html#isTouching">isTouching</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#mouseX">mouseX</a></li><li><a href="global.html#mouseY">mouseY</a></li><li><a href="global.html#musicPath">musicPath</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playBackGroundAudio">playBackGroundAudio</a></li><li><a href="global.html#preventShowingContextMenu">preventShowingContextMenu</a></li><li><a href="global.html#requestFullscreen">requestFullscreen</a></li><li><a href="global.html#resetDrawingOfMenus">resetDrawingOfMenus</a></li><li><a href="global.html#screenElements">screenElements</a></li><li><a href="global.html#setInputDownListeners">setInputDownListeners</a></li><li><a href="global.html#setInputEventListeners">setInputEventListeners</a></li><li><a href="global.html#setInputLeftListeners">setInputLeftListeners</a></li><li><a href="global.html#setInputRightListeners">setInputRightListeners</a></li><li><a href="global.html#setInputUpListeners">setInputUpListeners</a></li><li><a href="global.html#setKeyboardListeners">setKeyboardListeners</a></li><li><a href="global.html#setMouseListeners">setMouseListeners</a></li><li><a href="global.html#setSpaceListeners">setSpaceListeners</a></li><li><a href="global.html#setStoppableInterval">setStoppableInterval</a></li><li><a href="global.html#setTouchDimensions">setTouchDimensions</a></li><li><a href="global.html#setTouchListeners">setTouchListeners</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#startScreen">startScreen</a></li><li><a href="global.html#stopBackgroundMusic">stopBackgroundMusic</a></li><li><a href="global.html#stoppableIntervalIds">stoppableIntervalIds</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#touchBottom">touchBottom</a></li><li><a href="global.html#touchLeft">touchLeft</a></li><li><a href="global.html#touchRight">touchRight</a></li><li><a href="global.html#touchTop">touchTop</a></li><li><a href="global.html#unhoverFullScreenButton">unhoverFullScreenButton</a></li><li><a href="global.html#unhoverStartButton">unhoverStartButton</a></li><li><a href="global.html#world">world</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addMobileActionMenu">addMobileActionMenu</a></li><li><a href="global.html#backgroundMusicId">backgroundMusicId</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#checkDeviceAlignment">checkDeviceAlignment</a></li><li><a href="global.html#checkIfGameJustStarted">checkIfGameJustStarted</a></li><li><a href="global.html#checkIfTurnSuggested">checkIfTurnSuggested</a></li><li><a href="global.html#clearAllIntervals">clearAllIntervals</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#ctx">ctx</a></li><li><a href="global.html#deleteTurnNotification">deleteTurnNotification</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endScreen">endScreen</a></li><li><a href="global.html#exitFullscreen">exitFullscreen</a></li><li><a href="global.html#gameActive">gameActive</a></li><li><a href="global.html#hoverFullScreenButton">hoverFullScreenButton</a></li><li><a href="global.html#hoverStartButton">hoverStartButton</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#isClicking">isClicking</a></li><li><a href="global.html#isFullscreen">isFullscreen</a></li><li><a href="global.html#isMuted">isMuted</a></li><li><a href="global.html#isTouching">isTouching</a></li><li><a href="global.html#keyboard">keyboard</a></li><li><a href="global.html#mouseX">mouseX</a></li><li><a href="global.html#mouseY">mouseY</a></li><li><a href="global.html#musicPath">musicPath</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playBackGroundAudio">playBackGroundAudio</a></li><li><a href="global.html#preventShowingContextMenu">preventShowingContextMenu</a></li><li><a href="global.html#removeMobileActionMenu">removeMobileActionMenu</a></li><li><a href="global.html#renderTurnNotification">renderTurnNotification</a></li><li><a href="global.html#requestFullscreen">requestFullscreen</a></li><li><a href="global.html#resetDrawingOfMenus">resetDrawingOfMenus</a></li><li><a href="global.html#screenElements">screenElements</a></li><li><a href="global.html#setInputDownListeners">setInputDownListeners</a></li><li><a href="global.html#setInputEventListeners">setInputEventListeners</a></li><li><a href="global.html#setInputLeftListeners">setInputLeftListeners</a></li><li><a href="global.html#setInputRightListeners">setInputRightListeners</a></li><li><a href="global.html#setInputUpListeners">setInputUpListeners</a></li><li><a href="global.html#setKeyboardListeners">setKeyboardListeners</a></li><li><a href="global.html#setMouseListeners">setMouseListeners</a></li><li><a href="global.html#setSpaceListeners">setSpaceListeners</a></li><li><a href="global.html#setStoppableInterval">setStoppableInterval</a></li><li><a href="global.html#setTouchDimensions">setTouchDimensions</a></li><li><a href="global.html#setTouchListeners">setTouchListeners</a></li><li><a href="global.html#setWindowChangeListeners">setWindowChangeListeners</a></li><li><a href="global.html#showStartScreen">showStartScreen</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#startScreen">startScreen</a></li><li><a href="global.html#stopBackgroundMusic">stopBackgroundMusic</a></li><li><a href="global.html#stoppableIntervalIds">stoppableIntervalIds</a></li><li><a href="global.html#toggleFullscreen">toggleFullscreen</a></li><li><a href="global.html#toggleMute">toggleMute</a></li><li><a href="global.html#touchBottom">touchBottom</a></li><li><a href="global.html#touchLeft">touchLeft</a></li><li><a href="global.html#touchRight">touchRight</a></li><li><a href="global.html#touchTop">touchTop</a></li><li><a href="global.html#turnNotificationActive">turnNotificationActive</a></li><li><a href="global.html#unhoverFullScreenButton">unhoverFullScreenButton</a></li><li><a href="global.html#unhoverStartButton">unhoverStartButton</a></li><li><a href="global.html#world">world</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Sep 17 2023 08:07:14 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Sep 20 2023 02:05:56 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

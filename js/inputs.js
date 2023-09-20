@@ -48,6 +48,13 @@ let mouseY;
 
 
 /**
+ * Represents the state of notification activation.
+ * @type {boolean}
+ */
+let turnNotificationActive = false;
+
+
+/**
  * Sets up input event listeners for keyboard, mouse, and touch events.
  */
 function setInputEventListeners() {
@@ -55,16 +62,7 @@ function setInputEventListeners() {
     setMouseListeners();
     setTouchListeners();
     preventShowingContextMenu();
-}
-
-
-function addMobileActionMenu() {
-    document.getElementById("mobileActionMenu").classList.remove("d-none");
-}
-
-
-function removeMobileActionMenu() {
-    document.getElementById("mobileActionMenu").classList.add("d-none");
+    setWindowChangeListeners();
 }
 
 
@@ -138,7 +136,6 @@ function setTouchDimensions(e) {
  * Sets up touch event listeners to handle touchstart and touchend events.
  */
 function setTouchListeners() {
-
     canvas.addEventListener("touchmove", (e) => {
         setTouchDimensions(e);
     }, { passive: true });
@@ -173,7 +170,6 @@ function setInputUpListeners() {
 }
 
 
-
 /** 
  Touch event listener for inputDown
 */
@@ -188,6 +184,7 @@ function setInputDownListeners() {
     });
 }
 
+
 /** 
  Touch event listener for inputLeft
 */
@@ -200,6 +197,7 @@ function setInputLeftListeners() {
         keyboard.unsetInput("ArrowLeft");
     });
 }
+
 
 /** 
  Touch event listener for inputRight
@@ -219,7 +217,6 @@ function setInputRightListeners() {
  Touch event listener for spaceBar-Button
 */
 function setSpaceListeners() {
-
     document.getElementById('inputSpace').addEventListener('touchstart', () => {
         keyboard.setInput("Space");
     }, { passive: true });
@@ -231,37 +228,55 @@ function setSpaceListeners() {
 
 
 /**
- * Changes the image source to a hover state when the mouse hovers over the element.
- * @param {HTMLElement} element - The HTML element to apply the hover effect to.
+ * Sets up event listeners for the window's "resize" event.
+ * When the window is resized, it triggers the checkDeviceAlignment function.
  */
-function hoverStartButton(element) {
-    element.setAttribute('src', './img/6.Botones/Start/2.png');
+function setWindowChangeListeners(){
+    window.addEventListener("resize", (event) => {
+        checkDeviceAlignment();
+    });
 }
 
 
 /**
- * Reverts the image source to its original state when the mouse is no longer hovering over the element.
- * @param {HTMLElement} element - The HTML element to revert the image source for.
+ * Checks the alignment of the device and handles turn notifications accordingly.
+ * If a turn is suggested based on the device alignment, it renders a notification.
+ * If the device alignment is not suggesting a turn, it deletes any existing turn notifications.
  */
-function unhoverStartButton(element) {
-    element.setAttribute('src', './img/6.Botones/Start/1.png');
+function checkDeviceAlignment() {
+    if (!turnNotificationActive) {
+        if (checkIfTurnSuggested()) {
+            renderTurnNotification();
+            setTimeout(() => {
+                deleteTurnNotification();
+            }, 4000);
+        } else {
+            deleteTurnNotification();
+            turnNotificationActive = false;
+        }
+    }
 }
 
 
 /**
- * Changes the image source to a hover state when the mouse hovers over the element.
- * @param {HTMLElement} element - The HTML element to apply the hover effect to.
+ * Checks if it's suggested to turn the device based on screen dimensions.
+ * @returns {boolean} - True if turning the device is suggested, otherwise false.
  */
-function hoverFullScreenButton(element) {
-    element.setAttribute('src', './img/6.Botones/Full Screen/Mesa de trabajo 7.png');
-}
+function checkIfTurnSuggested() {
+    // Get the device's width and height
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-
-/**
- * Reverts the image source to its original state when the mouse is no longer hovering over the element.
- * @param {HTMLElement} element - The HTML element to revert the image source for.
- */
-function unhoverFullScreenButton(element) {
-    element.setAttribute('src', './img/6.Botones/Full Screen/Mesa de trabajo 9.png');
+    // Check if either width or height is greater than 720px
+    if (screenWidth < 720 || screenHeight < 720) {
+        // Check if height is greater than width
+        if (screenHeight > screenWidth) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 

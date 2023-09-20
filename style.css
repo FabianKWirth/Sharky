@@ -28,6 +28,33 @@ body {
     background-image: url("./img/3. Background/Body/underwater.jpg");
 }
 
+.notification-container {
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    padding: 5px;
+    width: 200px;
+    opacity: 80%;
+    border-radius: 8px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    animation: deviceNotification 2s ease-in-out;
+
+}
+
+@keyframes deviceNotification {
+    0% {
+        left: calc(100% - 10px);
+        transform: translateX(-100%);
+        
+    }
+
+    100% {
+        left: 2px;
+    }
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -93,7 +120,6 @@ canvas {
     display: grid;
     grid-template-rows: 60px 60px;
     grid-template-columns: 60px 60px 60px;
-
 }
 
 .movement-inputs img {
@@ -145,26 +171,20 @@ canvas {
     }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 720px) {
     .movement-inputs {
-        grid-template-rows: 45px 45px;
-        grid-template-columns: 45px 45px 45px;
+        grid-template-rows: 54px 54px;
+        grid-template-columns: 54px 54px 54px;
     }
 
     .movement-inputs img {
-        height: 39px;
-        width: 39px;
+        height: 48px;
+        width: 48px;
     }
 
     .attack-input img {
-        height: 30px;
-        width: 150px;
-    }
-}
-
-@media only screen and (max-width: 480px) {
-    .attack-input img {
-        height: 20px;
+        height: 40px;
+        width: 220px;
     }
 }
 
@@ -179,13 +199,13 @@ canvas {
     }
 
     .movement-inputs {
-        grid-template-rows: 30px 30px;
-        grid-template-columns: 30px 30px 30px;
+        grid-template-rows: 54px 54px;
+        grid-template-columns: 54px 54px 54px;
     }
 
     .movement-inputs img {
-        height: 28px;
-        width: 28px;
+        height: 48px;
+        width: 48px;
     }
 
     .attack-input img {
@@ -202,11 +222,26 @@ canvas {
     }
 
     .movement-inputs {
-        height: calc(25vh - 20px);
         min-height: 70px;
     }
 }
 
+@media only screen and (max-width: 400px){
+    .attack-input img {
+        height: 25px;
+        width: 150px;
+    }
+
+    .movement-inputs {
+        grid-template-rows: 39px 39px;
+        grid-template-columns: 39px 39px 39px;
+    }
+
+    .movement-inputs img {
+        height: 35px;
+        width: 35px;
+    }
+}
 
 .d-none {
     display: none;
