@@ -427,7 +427,6 @@ class Character extends MoveableObject {
     moveCharacterUp() {
         this.y -= this.speed * 10;
         playAudio(this.swimming_sound);
-        this.otherDirection = false;
     }
 
 
@@ -439,7 +438,6 @@ class Character extends MoveableObject {
     moveCharacterDown() {
         this.y += this.speed * 10;
         playAudio(this.swimming_sound);
-        this.otherDirection = false;
     }
 
 

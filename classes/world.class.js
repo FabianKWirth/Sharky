@@ -227,9 +227,9 @@ class World {
         x = Math.abs(x);
 
         if (this.character.otherDirection && this.cameraOffset > -400) {
-            this.cameraOffset -= 6;
+            this.cameraOffset -= 4;
         } else if (!this.character.otherDirection && this.cameraOffset < -80) {
-            this.cameraOffset += 6;
+            this.cameraOffset += 4;
         }
         let cameraX = x + this.cameraOffset;
 
