@@ -64,15 +64,15 @@ class DrawableObject {
     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
     */
     draw(ctx) {
-        if (this.img) {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+            if (this.img) {
+                ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 
-        } else if (this.textContent) {
-            ctx.fillStyle = this.fontColor;
-            ctx.font = `${this.fontSize} ${this.fontFamily}`;
-            ctx.fillText(this.textContent, this.x, this.y);
+            } else if (this.textContent) {
+                ctx.fillStyle = this.fontColor;
+                ctx.font = `${this.fontSize} ${this.fontFamily}`;
+                ctx.fillText(this.textContent, this.x, this.y);
 
-        }
+            }
     }
 
 
@@ -118,15 +118,12 @@ class DrawableObject {
         return promises;
     }
 
-    async loadImages(arr) {
-        const newPromises = this.storeImageCache(arr);
-        if (newPromises) {
-            newPromises.forEach((promise) => {
-                if (promise.then) {
-                    pendingPromises.push(promise);
-                }
-            });
-        }
+    async loadImages(arr){
+        newPromises=this.storeImageCache(arr);
+        
+        //.then(() => {
+        //    console.log('All images loaded successfully.');
+        //});
     }
 
     /*
