@@ -87,7 +87,7 @@ class MoveableObject extends DrawableObject {
      * The audio element if getting hit.
      * @type {Audio}
      */
-    hitAudio = new Audio("./audio/hit2.mp3")
+    hitAudio = new Audio("./audio/hit2.mp3");
 
 
     /**

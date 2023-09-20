@@ -76,7 +76,7 @@ let backgroundMusicId;
  */
 let musicPath = "./audio/background-action.mp3";
 
-
+pendingPromises=[];
 /**
  * Initializes the game by setting up the canvas, clearing it ,configuring input event listeners and displaying the start screen.
  */
@@ -231,10 +231,42 @@ function exitFullscreen() {
  * @param {function} fn - The function to be executed repeatedly at specified intervals.
  * @param {number} time - The time, in milliseconds, between each execution of the function.
  */
-function setStoppableInterval(fn, time) {
-    let id = setInterval(fn, time);
-    stoppableIntervalIds.push(id);
+async function setStoppableInterval(fn, time) {
+
+
+    setTimeout(() => {
+        let id = setInterval(fn, time);
+        stoppableIntervalIds.push(id);
+    }, 20000);
+    //waitForGameLoaded(10, () => {
+    //    let id = setInterval(fn, time);
+    //    stoppableIntervalIds.push(id);
+    // });
+
+    //let id = setInterval(fn, time);
+    //stoppableIntervalIds.push(id);
 }
+
+
+function waitForGameLoaded(maxDurationInSeconds, callback) {
+    let elapsedTime = 0;
+
+    const intervalId = setInterval(() => {
+        elapsedTime++;
+
+        if (World.stopGame === false) {
+            clearInterval(intervalId);
+            callback(); // Call the callback function when the condition is met
+
+        } else if (elapsedTime >= maxDurationInSeconds) {
+            clearInterval(intervalId);
+            // Handle the case when the condition is not met within the specified duration
+            console.log(`Variable did not change to false within ${maxDurationInSeconds} seconds.`);
+        }
+    }, 1000); // Check every second
+}
+
+
 
 
 /**

@@ -65,7 +65,6 @@ class DrawableObject {
     */
     draw(ctx) {
             if (this.img) {
-
                 ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 
             } else if (this.textContent) {
@@ -100,13 +99,41 @@ class DrawableObject {
     * Load multiple images from an array of paths and store them in the image cache.
     * @param {string[]} arr - An array of image paths to load.
     */
+    storeImageCache(arr) {
+        const promises = arr.map((path) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = path;
+                img.onload = () => {
+                    this.imageCache[path] = img;
+                    resolve(); // Resolve the promise when the image is loaded
+                };
+                img.onerror = (error) => {
+                    reject(error); // Reject the promise if there's an error loading the image
+                };
+            });
+        });
+
+        console.log(promises);
+        return promises;
+    }
+
+    async loadImages(arr){
+        newPromises=this.storeImageCache(arr);
+        
+        //.then(() => {
+        //    console.log('All images loaded successfully.');
+        //});
+    }
+
+    /*
     loadImages(arr) {
         arr.forEach((path) => {
             let img = new Image();
             img.src = path;
             this.imageCache[path] = img;
         });
-    }
+    }+/
 
 
     /**
