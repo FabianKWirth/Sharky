@@ -76,7 +76,7 @@ let backgroundMusicId;
  */
 let musicPath = "./audio/background-action.mp3";
 
-pendingPromises=[];
+pendingPromises = [];
 /**
  * Initializes the game by setting up the canvas, clearing it ,configuring input event listeners and displaying the start screen.
  */
@@ -88,8 +88,43 @@ function init() {
     setInputEventListeners();
     showStartScreen(canvas, ctx);
     checkDeviceAlignment();
+    clearPendingPromises();
 }
 
+function clearPendingPromises() {
+    setInterval(() => {
+
+        checkPendingPromises();
+        //const stillPendingPromises = [];
+        //pendingPromises = stillPendingPromises; // Update the array with pending promises
+        //console.log(JSON.stringify(stillPendingPromises));
+        //console.log(pendingPromises);
+    }, 2000);
+}
+
+
+async function checkPendingPromises() {
+
+
+    updatePendingPromises();
+    console.log(pendingPromises);
+}
+
+function updatePendingPromises() {
+    pendingPromises.forEach((promise, i) => {
+        promiseState(promise).then(state => {
+            if (state == 'fulfilled') {
+                pendingPromises.splice(i, 1);
+            }
+        });
+    });
+}
+
+function promiseState(p) {
+    const t = {};
+    return Promise.race([p, t])
+        .then(v => (v === t) ? "pending" : "fulfilled", () => "rejected");
+}
 
 /**
  * Renders the start screen of the game.
