@@ -97,14 +97,14 @@ class World {
         this.ctx = ctx;
         this.canvas = canvas;
         this.keyboard = keyboard;
-        this.initWorld();
+        this.initWorldElements();
     }
 
     async initWorld(){
-        await this.initWorldElements();
         World.stopGame = false;
         this.checkCollisions();
         world.draw();
+        this.initWorldElements();
         playBackGroundAudio(musicPath);
     }
 
@@ -117,10 +117,7 @@ class World {
         this.level = level1;
         this.collectedCoins = 0;
         this.totalCoins = this.level.coinBows.length * 5;
-        this.setWorld()
-        
-        
-
+        this.setWorld();
     }
 
 

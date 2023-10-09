@@ -98,6 +98,7 @@ function init() {
 function showStartScreen(canvas, ctx) {
     startScreen = new Menu(canvas, ctx, "start");
     startScreen.resumeDrawing();
+    world = new World(canvas, ctx, keyboard);
 }
 
 
@@ -108,7 +109,7 @@ function startGame() {
     addMobileActionMenu();
     resetDrawingOfMenus();
     if (checkIfGameJustStarted() == false) {
-        world = new World(canvas, ctx, keyboard);
+        world.initWorld();
     }
 }
 
@@ -231,9 +232,11 @@ function exitFullscreen() {
  * @param {function} fn - The function to be executed repeatedly at specified intervals.
  * @param {number} time - The time, in milliseconds, between each execution of the function.
  */
-function setStoppableInterval(fn, time) {
-    let id = setInterval(fn, time);
-    stoppableIntervalIds.push(id);
+function setStoppableInterval(fn, time, alwaysPass = false) {
+    if (World.stopGame == false || alwaysPass) {
+        let id = setInterval(fn, time);
+        stoppableIntervalIds.push(id);
+    }
 }
 
 

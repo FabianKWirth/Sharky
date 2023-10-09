@@ -120,7 +120,7 @@ class Buttons extends DrawableObject {
             this.adaptObjectToViewport();
             this.handleButtonInteraction();
             this.setButtonCursor();
-        }, 1000 / 30);
+        }, 1000 / 30, true);
     }
 
 

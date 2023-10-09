@@ -44,12 +44,14 @@ class JellyFish extends MoveableObject {
     * Initiates the movement animation loop for the Jellyfish object.
     */
     setMovement() {
-        setStoppableInterval(() => {
-            this.move();
-        }, 1000 / 30);
+        if (!World.stopGame){
+            setStoppableInterval(() => {
+                this.move();
+            }, 1000 / 30);
+        }
     }
 
-    
+
     /**
     * Initiates the animation loop for the Jellyfish object.
     * The Jellyfish alternates between its swimming animation and dying animation if it's dead.
