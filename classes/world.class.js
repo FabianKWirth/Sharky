@@ -93,14 +93,13 @@ class World {
     * @constructor
     */
     constructor(canvas, ctx, keyboard) {
-
         this.ctx = ctx;
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.initWorldElements();
     }
 
-    async initWorld(){
+    async initWorld() {
         World.stopGame = false;
         this.checkCollisions();
         world.draw();
@@ -108,11 +107,12 @@ class World {
         playBackGroundAudio(musicPath);
     }
 
-    async initWorldElements(){
+    async initWorldElements() {
         this.character = new Character();
         this.lifeStatusBar = new StatusBar("life");
         this.coinStatusBar = new StatusBar("coin");
         this.poisonStatusBar = new StatusBar("poison");
+        this.bossStatusBar = null;
         initLevel1();
         this.level = level1;
         this.collectedCoins = 0;
